@@ -14,7 +14,7 @@ const tareas = useMemo(() => data ?? [], [data]);
             { header: 'Fecha de fin', accessorKey: 'enddate' },
             { header: 'Persona a cargo', accessorKey: 'perincharge' },
             { header: 'Descripcion', accessorKey: 'description' },
-            { header: 'Prioridad', accessorKey: 'Priority' },
+            { header: 'Nivel de Prioridad', accessorKey: 'Priority' },
         ],
         []
     );
