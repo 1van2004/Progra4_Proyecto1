@@ -1,6 +1,7 @@
 import RootLayout from "./Components/RootLayout";
 import HomePage from "./Pages/HomePage";
 import TareasPage from "./Pages/TareasPage"
+import ProveedoresPage from "./Pages/ProveedoresPage";
 import { createBrowserHistory, createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
 
 const rootRoute = createRootRoute({
@@ -19,11 +20,17 @@ const homeRoute = createRoute({
      component: TareasPage, 
     }); 
 
+    const proveedoresRoute = createRoute({ 
+        getParentRoute: () => rootRoute,    
+        path: "/proveedores", 
+         component: ProveedoresPage, 
+        }); 
     
  
         rootRoute.addChildren([ 
             homeRoute, 
-            tareaRoute
+            tareaRoute,
+            proveedoresRoute,
 ])
 
 const router = createRouter({ 
