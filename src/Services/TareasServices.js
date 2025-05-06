@@ -1,15 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const WORKS_API_URL = 'https://api.jsonbin.io/v3/qs/681257b28960c979a5908062'; 
+const TAREAS_BIN = '681a4afb8960c979a594875e';
+const TAREAS_API_URL = 'https://api.jsonbin.io/v3/b/' + TAREAS_BIN; 
+const TAREAS_API_KEY = '$2a$10$d8Zx8W4fPo2BaLJywRDCaeNpzshSkUPHwKsCRvfxPPqRBJOU8Fbuy';
 
 // Fetch function to get users from the server 
 
 const fetchTareas = async () => { 
-const response = await axios.get(WORKS_API_URL); 
+
+    try
+    {
+const response = await axios.get(TAREAS_API_URL,
+    {
+        headers:{
+            'X-Access-Key': TAREAS_API_KEY,
+        }
+    }); 
 // Extract the array of user records from the JSON payload 
-return response.data.record;  // assumes response.data has the shape { id, record, metadata } 
+return response.data.record.Tareas; // assumes response.data has the shape { id, record, metadata } 
+}
+catch(error){
+    console.error('Error fetching works:', error);
+    return[];
+}
+
 };
+
 
 /** 
 
