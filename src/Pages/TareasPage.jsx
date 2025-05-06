@@ -1,7 +1,7 @@
-import WorkList from "../Components/WorkList";
+import WorkList from "../Components/TareasList";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const TareasPages = () =>{
+const TareasPage = () =>{
 
     const queryClient = new QueryClient(); 
     return(
@@ -11,4 +11,4 @@ const TareasPages = () =>{
     );
 }
 
-export default TareasPages;
+export default TareasPage;
