@@ -1,8 +1,8 @@
 import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { useTareas } from "../Services/TareaServices";
+import { useTareas } from "../Services/TareasServices";
 
-const WorkList = () => {
+const TareasList = () => {
 const { data, isLoading, isError, error } = useTareas();
 const tareas = useMemo(() => data ?? [], [data]); 
 
@@ -82,4 +82,4 @@ return(
 )
 }
 
-export default WorkList
+export default TareasList
