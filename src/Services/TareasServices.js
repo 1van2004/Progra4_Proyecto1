@@ -1,4 +1,6 @@
+import { useMutation } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const TAREAS_BIN = '681a4afb8960c979a594875e';
@@ -18,7 +20,7 @@ const response = await axios.get(TAREAS_API_URL,
         }
     }); 
 // Extract the array of user records from the JSON payload 
-return response.data.record.Tareas; // assumes response.data has the shape { id, record, metadata } 
+return response.data.record.tareas; // assumes response.data has the shape { id, record, metadata } 
 }
 catch(error){
     console.error('Error fetching works:', error);
@@ -27,22 +29,61 @@ catch(error){
 
 };
 
+export async function postTarea({ nuevaTarea }) {
+  const tareas = await fetchTareas();
+  //const updated = [...existing, newUser];              
+  tareas.push(nuevaTarea);
 
-/** 
+  try {
+      const response = await axios.put(
+        TAREAS_API_URL,
+          { tareas: tareas },
+          {
+            headers: {
+              'X-Access-Key': TAREAS_API_KEY,
+            }
+          }
+      );
 
- * Custom hook to retrieve users via React Query. 
+      if(response.status != 200) 
+          throw new Error("Error adding work");
 
- * Returns { data, isLoading, isError, error } where data is an array of users. 
+      return nuevaTarea;
+  } catch (error) {
+      console.error("Error adding work:", error);
+  }
+}
 
- * Uses the object syntax required by React Query. 
-
- */ 
 
 export const useTareas = () => { 
 return useQuery({ 
-queryKey: ['Tareas'], 
+queryKey: ['tareas'], 
 queryFn: fetchTareas, 
 staleTime: 5 * 60 * 1000, // cache for 5 minutes 
 retry: 1,// retry once on failure 
 }); 
 }; 
+
+// Hook to encapsulate the mutation + cache updates
+  export function useAddTareas() {
+    const queryClient = useQueryClient()
+    
+    // **Optimistic update**: before the request fires
+    return useMutation({
+      mutationFn: postTarea,
+      onMutate: async ({ nuevaTarea }) => {
+        await queryClient.cancelQueries(['tareas'])
+        const previous = queryClient.getQueryData(['tareas'])
+        queryClient.setQueryData(['tareas'], old => [...(old||[]), nuevaTarea])
+        return { previous }
+      },
+      onError: (err, variables, context) => {
+        if (context?.previous) {
+          queryClient.setQueryData(['tareas'], context.previous)
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries(['tareas'])
+      }
+    })
+}
