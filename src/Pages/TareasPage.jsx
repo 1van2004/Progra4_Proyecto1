@@ -1,12 +1,14 @@
-import WorkList from "../Components/TareasList";
+import AddTareaButton from "../Components/AddTareaButton";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import TareasList from "../Components/TareasList";
 
 const TareasPage = () =>{
 
     const queryClient = new QueryClient(); 
     return(
         <QueryClientProvider client={queryClient}>
-        <WorkList/>
+        <AddTareaButton/>
+        <TareasList/>
         </QueryClientProvider>
     );
 }

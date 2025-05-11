@@ -9,11 +9,11 @@ const tareas = useMemo(() => data ?? [], [data]);
     
     const columns = useMemo(
         () => [
-            { header: 'ID', accessorKey: 'id' },
+            { header: 'Descripcion', accessorKey: 'description' },
+            //{ header: 'ID', accessorKey: 'id' },
             { header: 'Fecha de inicio', accessorKey: 'startdate' },
             { header: 'Fecha de fin', accessorKey: 'enddate' },
             { header: 'Persona a cargo', accessorKey: 'perincharge' },
-            { header: 'Descripcion', accessorKey: 'description' },
             { header: 'Nivel de Prioridad', accessorKey: 'Priority' },
         ],
         []
@@ -40,13 +40,13 @@ return(
     <h1 className="text-3xl font-bold mb-4">Tareas</h1>
     <div className="overflow-x-auto bg-white rounded shadow">
         <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead style={{ backgroundColor: '#00D09E' }}>
                 {table.getHeaderGroups().map(headerGroup => (
                     <tr key={headerGroup.id}>
                         {headerGroup.headers.map(header => (
                             <th
                                 key={header.id}
-                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
                                 {flexRender(
                                     header.column.columnDef.header,
