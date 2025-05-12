@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 const API_KEY = import.meta.env.VITE_MASTER_KEY_Proveedores;
-const BASE_URL = "https://api.jsonbin.io/v3/b/68217be58561e97a501222ab";
-console.log(API_KEY);
-console.log(BASE_URL);
+const BASE_URL = import.meta.env.VITE_API_URL_Proveedores;
 const headers = {
   'Content-Type': 'application/json',
   'X-Master-Key': API_KEY,
