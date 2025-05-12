@@ -1,82 +1,51 @@
-import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
-import { useMemo } from "react";
-import { useProveedores } from "../Services/ProveedoresService";
+import React from 'react';
 
-const ProveedorList = () => {
-    const { data, isLoading, isError, error } = useProveedores();
-    const proveedores = useMemo(() => data ?? [], [data]);
+function ProveedorList({ proveedores, onEditar, onEliminar }) {
+  if (!proveedores || proveedores.length === 0) {
+    return <p className="text-gray-500">No hay proveedores registrados.</p>;
+  }
 
-    const columns = useMemo(
-        () => [
-            { header: 'ID', accessorKey: 'id' },
-            { header: 'Empresa', accessorKey: 'nombreEmpresa' },
-            { header: 'Representante', accessorKey: 'nombreRepresentante' },
-            { header: 'Cédula', accessorKey: 'cedulaRepresentante' },
-            { header: 'Correo', accessorKey: 'correoEmpresa' },
-            { header: 'Teléfono', accessorKey: 'telefonoEmpresa' },
-            { header: 'Descripción del producto', accessorKey: 'descripcionProducto' },
-            { header: 'Número de cuenta', accessorKey: 'numeroCuenta' },
-        ],
-        []
-    );
-
-    const table = useReactTable({
-        data: proveedores,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    });
-
-    if (isLoading) {
-        return <div className="p-4">Cargando proveedores...</div>;
-    }
-
-    if (isError) {
-        return <div className="p-4 text-red-500">Error: {error.message}</div>;
-    }
-
-    return (
-        <div className="p-4 bg-gray-100 min-h-screen">
-            <h1 className="text-3xl font-bold mb-4">Proveedores</h1>
-            <div className="overflow-x-auto bg-white rounded shadow">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <tr key={headerGroup.id}>
-                                {headerGroup.headers.map(header => (
-                                    <th
-                                        key={header.id}
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
-                                        {flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext()
-                                        )}
-                                    </th>
-                                ))}
-                            </tr>
-                        ))}
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {table.getRowModel().rows.map(row => (
-                            <tr key={row.id}>
-                                {row.getVisibleCells().map(cell => (
-                                    <td
-                                        key={cell.id}
-                                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
-                                    >
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                        )}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
-};
+  return (
+    <div className="overflow-x-auto shadow border rounded mt-4">
+      <table className="min-w-full bg-white text-sm">
+        <thead>
+          <tr className="bg-gray-100 text-left font-semibold text-gray-700">
+            <th className="py-2 px-4">ID</th>
+            <th className="py-2 px-4">Nombre de la Empresa</th>
+            <th className="py-2 px-4">Nombre del Representante</th>
+            <th className="py-2 px-4">Cédula del Representante</th>
+            <th className="py-2 px-4">Correo de la Empresa</th>
+            <th className="py-2 px-4">Teléfono de la Empresa</th>
+            <th className="py-2 px-4">Descripción de Productos</th>
+            <th className="py-2 px-4">Número de Cuenta</th>
+            <th className="py-2 px-4">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {proveedores.map((prov) => (
+            <tr key={prov.id} className="border-t hover:bg-gray-50">
+              <td className="py-2 px-4">{prov.id}</td>
+              <td className="py-2 px-4">{prov.nombreEmpresa}</td>
+              <td className="py-2 px-4">{prov.nombreRepresentante}</td>
+              <td className="py-2 px-4">{prov.cedulaRepresentante}</td>
+              <td className="py-2 px-4">{prov.correoEmpresa}</td>
+              <td className="py-2 px-4">{prov.telefonoEmpresa}</td>
+              <td className="py-2 px-4">{prov.descripcionProductos}</td>
+              <td className="py-2 px-4">{prov.numeroCuenta}</td>
+              <td className="py-2 px-4">
+                <button onClick={() => onEditar(prov)} className="text-blue-600 hover:underline mr-2">
+                  Editar
+                </button>
+                <button onClick={() => onEliminar(prov.id)} className="text-red-600 hover:underline">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 export default ProveedorList;
