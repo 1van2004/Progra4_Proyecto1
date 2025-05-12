@@ -6,24 +6,24 @@ function ProveedorList({ proveedores, onEditar, onEliminar }) {
   }
 
   return (
-    <div className="overflow-x-auto shadow border rounded mt-4">
-      <table className="min-w-full bg-white text-sm">
-        <thead>
-          <tr className="bg-gray-100 text-left font-semibold text-gray-700">
-            <th className="py-2 px-4">ID</th>
-            <th className="py-2 px-4">Nombre de la Empresa</th>
-            <th className="py-2 px-4">Nombre del Representante</th>
-            <th className="py-2 px-4">Cédula del Representante</th>
-            <th className="py-2 px-4">Correo de la Empresa</th>
-            <th className="py-2 px-4">Teléfono de la Empresa</th>
-            <th className="py-2 px-4">Descripción de Productos</th>
-            <th className="py-2 px-4">Número de Cuenta</th>
-            <th className="py-2 px-4">Acciones</th>
+    <div className="overflow-x-auto bg-white rounded shadow">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead style={{ backgroundColor: '#00D09E' }}>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">ID</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Nombre de la Empresa</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Nombre del Representante</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Cédula del Representante</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Correo de la Empresa</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Teléfono de la Empresa</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Descripción de Productos</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Número de Cuenta</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white divide-y divide-gray-200">
           {proveedores.map((prov) => (
-            <tr key={prov.id} className="border-t hover:bg-gray-50">
+            <tr key={prov.id}>
               <td className="py-2 px-4">{prov.id}</td>
               <td className="py-2 px-4">{prov.nombreEmpresa}</td>
               <td className="py-2 px-4">{prov.nombreRepresentante}</td>
