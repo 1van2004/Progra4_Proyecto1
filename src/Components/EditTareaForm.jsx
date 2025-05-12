@@ -1,0 +1,113 @@
+import { useState, useEffect } from "react";
+import { useUpdateTarea } from "../Services/TareasServices";
+
+const EditTareaForm = ({ tarea, onSuccess }) => {
+  const [formData, setFormData] = useState({
+    id: "",
+    description: "",
+    startdate: "",
+    enddate: "",
+    perincharge: "",
+    Priority: ""
+  });
+
+  useEffect(() => {
+    if (tarea) {
+      setFormData(tarea);
+    }
+  }, [tarea]);
+
+  const { mutate } = useUpdateTarea();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    mutate(formData, {
+      onSuccess: () => {
+        if (onSuccess) onSuccess(); // cerrar modal o refrescar lista
+      }
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block font-medium">Descripción</label>
+        <input
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block font-medium">Fecha de inicio</label>
+        <input
+          type="date"
+          name="startdate"
+          value={formData.startdate}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block font-medium">Fecha de fin</label>
+        <input
+          type="date"
+          name="enddate"
+          value={formData.enddate}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block font-medium">Persona a cargo</label>
+        <input
+          name="perincharge"
+          value={formData.perincharge}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block font-medium">Nivel de prioridad</label>
+        <select
+          name="Priority"
+          value={formData.Priority}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+          required
+        >
+          <option value="">Seleccione</option>
+          <option value="Alta">Alta</option>
+          <option value="Media">Media</option>
+          <option value="Baja">Baja</option>
+        </select>
+      </div>
+
+      <button
+        type="submit"
+        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      >
+        Guardar cambios
+      </button>
+    </form>
+  );
+};
+
+export default EditTareaForm;
