@@ -27,11 +27,6 @@ const homeRoute = createRoute({
         }); 
     
  
-        rootRoute.addChildren([ 
-            homeRoute, 
-            tareaRoute,
-            proveedoresRoute,
-])
 const inventarioRoute = createRoute({
     
     getParentRoute: () => rootRoute,
@@ -42,7 +37,8 @@ const inventarioRoute = createRoute({
   rootRoute.addChildren([
     homeRoute,
     tareaRoute,
-    inventarioRoute, 
+    inventarioRoute,
+    proveedoresRoute, 
 ]);
 
 const router = createRouter({
