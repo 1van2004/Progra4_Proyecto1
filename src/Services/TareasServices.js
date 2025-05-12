@@ -87,3 +87,56 @@ retry: 1,// retry once on failure
       }
     })
 }
+
+
+export async function deleteTarea(id) {
+  const tareas = await fetchTareas();
+  const nuevasTareas = tareas.filter(t => t.id !== id);
+
+  const response = await axios.put(
+    TAREAS_API_URL,
+    { tareas: nuevasTareas },
+    {
+      headers: {
+        'X-Access-Key': TAREAS_API_KEY,
+      }
+    }
+  );
+
+  if (response.status !== 200) {
+    throw new Error("Error al eliminar tarea");
+  }
+
+  return id;
+}
+
+export async function updateTarea(updatedTarea) {
+  const tareas = await fetchTareas();
+  const nuevasTareas = tareas.map(t => t.id === updatedTarea.id ? updatedTarea : t);
+
+  const response = await axios.put(
+    TAREAS_API_URL,
+    { tareas: nuevasTareas },
+    {
+      headers: {
+        'X-Access-Key': TAREAS_API_KEY,
+      }
+    }
+  );
+
+  if (response.status !== 200) throw new Error("Error al actualizar tarea");
+
+  return updatedTarea;
+}
+
+export function useUpdateTarea() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateTarea,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tareas']);
+    }
+  });
+}
+
