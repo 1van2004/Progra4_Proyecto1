@@ -1,13 +1,27 @@
 import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
+import { useQueryClient } from '@tanstack/react-query';
 import { useTareas } from "../Services/TareasServices";
 import { deleteTarea } from "../Services/TareasServices";
+import { ToastContainer, toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-toastify/dist/ReactToastify.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import TareaButton from "./TareaButton"
 import AddGenericModal from "./AddGenericModal"
 import EditTareaForm from "./EditTareaForm"
 
 const TareasList = () => {
+  const queryClient = useQueryClient();
 const { data, isLoading, isError, error } = useTareas();
 const tareas = useMemo(() => data ?? [], [data]); 
+
+ const [filtroResponsable, setFiltroResponsable] = useState("");
+
+  const tareasFiltradas = useMemo(() => {
+    if (!filtroResponsable) return tareas;
+    return tareas.filter((t) => t.perincharge === filtroResponsable);
+  }, [tareas, filtroResponsable]);
 
  const [showEditModal, setShowEditModal] = useState(false);
   const [tareaSeleccionada, setTareaSeleccionada] = useState(null);
@@ -17,17 +31,32 @@ const tareas = useMemo(() => data ?? [], [data]);
     setShowEditModal(true);
   };
 
-const handleDelete = async (tarea) => {
-  const confirm = window.confirm(`¿Seguro que quieres borrar la tarea "${tarea.description}"?`);
-  if (!confirm) return;
-
-  try {
-    await deleteTarea(tarea.id);
-    alert("Tarea eliminada correctamente.");
-  } catch (error) {
-    console.error("Error al eliminar tarea:", error);
-    alert("Ocurrió un error al borrar la tarea.");
-  }
+const handleDelete = (tarea) => {
+  confirmAlert({
+    title: 'Confirmación',
+    message: `¿Seguro que quieres borrar la tarea "${tarea.description}" del fontanero ${tarea.perincharge}?`,
+    buttons: [
+      {
+        label: 'Sí, borrar',
+        onClick: async () => {
+          try {
+            await deleteTarea(tarea.id);
+            toast.success("Tarea eliminada correctamente.");
+            queryClient.invalidateQueries(['tareas']);
+          } catch (error) {
+            console.error("Error al eliminar tarea:", error);
+            toast.error("Ocurrió un error al borrar la tarea.");
+          }
+        }
+      },
+      {
+        label: 'Cancelar',
+        onClick: () => {
+          toast.info("Acción cancelada.");
+        }
+      }
+    ]
+  });
 };
 
 
@@ -64,13 +93,13 @@ const handleDelete = async (tarea) => {
   ],
   []
 );
-        
 
-    const table = useReactTable({
-        data,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    });
+const table = useReactTable({
+    data: tareasFiltradas,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+        
 
     // Loading and error states 
 if (isLoading) { 
@@ -84,7 +113,12 @@ if (isLoading) {
 
 return(
 <div className="p-4 bg-gray-100 min-h-screen">
+   <ToastContainer/>
     <h1 className="text-3xl font-bold mb-4">Tareas</h1>
+
+ {/* Dropdown + botón agregar */}
+      <TareaButton tareas={tareas} onFiltrarResponsable={setFiltroResponsable} />
+
     <div className="overflow-x-auto bg-white rounded shadow">
         <table className="min-w-full divide-y divide-gray-200">
             <thead style={{ backgroundColor: '#00D09E' }}>
