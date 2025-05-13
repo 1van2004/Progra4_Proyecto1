@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUpdateTarea } from "../Services/TareasServices";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditTareaForm = ({ tarea, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -103,6 +105,7 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
       <button
         type="submit"
         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+         onClick={() =>  toast.success("Tarea editada.")}
       >
         Guardar cambios
       </button>
