@@ -4,22 +4,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import { obtenerInventario, guardarInventario } from '../Services/InventarioServices';
 import InventarioList from '../Components/InventarioList';
 import logo from '../assets/login.png';
-// ... (importaciones iguales)
+
 function InventoryPage() {
   const [search, setSearch] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [inventory, setInventory] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [idExistente, setIdExistente] = useState(false);
   const [productoActual, setProductoActual] = useState({
-    id: '',
-    nombre: '',
-    descripcion: '',
-    cantidad: '',
-    unidad: '',
-    fechaIngreso: '',
-    precio: '',
-    moneda: 'colones',
-    categoria: ''
+    id: '', nombre: '', descripcion: '', cantidad: '', unidad: '',
+    fechaIngreso: '', precio: '', moneda: 'colones', categoria: ''
   });
 
   useEffect(() => {
@@ -27,9 +21,7 @@ function InventoryPage() {
   }, []);
 
   useEffect(() => {
-    if (search.trim() === '') {
-      setSearchTerm('');
-    }
+    if (search.trim() === '') setSearchTerm('');
   }, [search]);
 
   const handleSearch = () => {
@@ -37,34 +29,19 @@ function InventoryPage() {
       setSearchTerm('');
       return;
     }
-
     const resultados = inventory.filter(item =>
       item.id.toLowerCase().includes(search.toLowerCase()) ||
       item.nombre.toLowerCase().includes(search.toLowerCase()) ||
       item.categoria.toLowerCase().includes(search.toLowerCase())
     );
-
-    if (resultados.length === 0) {
-      toast.warn("No se encontraron productos.");
-    }
-
+    if (resultados.length === 0) toast.warn("No se encontraron productos.");
     setSearchTerm(search);
   };
 
   const handleGuardar = async () => {
     const { id, nombre, descripcion, cantidad, unidad, fechaIngreso, precio, moneda, categoria } = productoActual;
 
-    if (
-      !id.trim() ||
-      !nombre.trim() ||
-      !descripcion.trim() ||
-      cantidad === '' || isNaN(cantidad) || parseFloat(cantidad) < 0 ||
-      precio === '' || isNaN(precio) || parseFloat(precio) < 0 ||
-      !unidad ||
-      !fechaIngreso ||
-      !moneda ||
-      !categoria
-    ) {
+    if (!id.trim() || !nombre.trim() || !descripcion.trim() || cantidad === '' || isNaN(cantidad) || parseFloat(cantidad) < 0 || precio === '' || isNaN(precio) || parseFloat(precio) < 0 || !unidad || !fechaIngreso || !moneda || !categoria) {
       toast.error("Por favor, complete todos los campos correctamente.");
       return;
     }
@@ -73,9 +50,7 @@ function InventoryPage() {
     let nuevaLista;
 
     if (existe) {
-      nuevaLista = inventory.map(item =>
-        item.id === id ? productoActual : item
-      );
+      nuevaLista = inventory.map(item => item.id === id ? productoActual : item);
       toast.info("Producto actualizado correctamente.");
     } else {
       nuevaLista = [...inventory, productoActual];
@@ -87,27 +62,20 @@ function InventoryPage() {
 
     setShowModal(false);
     setProductoActual({
-      id: '',
-      nombre: '',
-      descripcion: '',
-      cantidad: '',
-      unidad: '',
-      fechaIngreso: '',
-      precio: '',
-      moneda: 'colones',
-      categoria: ''
+      id: '', nombre: '', descripcion: '', cantidad: '', unidad: '',
+      fechaIngreso: '', precio: '', moneda: 'colones', categoria: ''
     });
+    setIdExistente(false);
   };
 
   const handleEditar = (item) => {
     setProductoActual(item);
+    setIdExistente(false);
     setShowModal(true);
   };
 
   const handleEliminar = async (id) => {
-    const confirmar = window.confirm('¿Estás seguro de que deseas eliminar este producto?');
-    if (!confirmar) return;
-
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
     const nuevaLista = inventory.filter(item => item.id !== id);
     setInventory(nuevaLista);
     await guardarInventario(nuevaLista);
@@ -141,25 +109,19 @@ function InventoryPage() {
           />
           <button
             onClick={handleSearch}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             Buscar
           </button>
         </div>
         <button
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           onClick={() => {
             setProductoActual({
-              id: '',
-              nombre: '',
-              descripcion: '',
-              cantidad: '',
-              unidad: '',
-              fechaIngreso: '',
-              precio: '',
-              moneda: 'colones',
-              categoria: ''
+              id: '', nombre: '', descripcion: '', cantidad: '', unidad: '',
+              fechaIngreso: '', precio: '', moneda: 'colones', categoria: ''
             });
+            setIdExistente(false);
             setShowModal(true);
           }}
         >
@@ -181,7 +143,6 @@ function InventoryPage() {
                 ? 'Editar producto'
                 : 'Agregar producto'}
             </h2>
-            
 
             <div className="mb-3">
               <label className="block font-medium">ID Producto</label>
@@ -193,9 +154,11 @@ function InventoryPage() {
                   const idIngresado = e.target.value;
                   const encontrado = inventory.find(item => item.id === idIngresado);
                   if (encontrado) {
-                    toast.error("El ID ya existe. Por favor, ingrese un ID único.");
+                    setProductoActual(encontrado);
+                    setIdExistente(false);
                   } else {
                     setProductoActual(prev => ({ ...prev, id: idIngresado }));
+                    setIdExistente(false);
                   }
                 }}
               />
@@ -304,15 +267,15 @@ function InventoryPage() {
             <div className="flex justify-end gap-2 mt-4">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                className="px-4 py-2 rounded text-white bg-[#DC2626] hover:bg-[#DC2626]"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleGuardar}
-                className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                className="px-4 py-2 rounded text-white bg-[#00D09E] hover:bg-[#00B78B]"
               >
-                Guardar
+                {inventory.find(item => item.id === productoActual.id) ? 'Actualizar' : 'Guardar'}
               </button>
             </div>
           </div>

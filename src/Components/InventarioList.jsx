@@ -6,22 +6,22 @@ function InventarioList({ inventario, onEditar, onEliminar }) {
   }
 
   return (
-    <div className="overflow-x-auto shadow border rounded mt-4">
-      <table className="min-w-full bg-white text-sm">
-        <thead>
-          <tr className="bg-gray-100 text-left font-semibold text-gray-700">
-            <th className="py-2 px-4">ID </th>
-            <th className="py-2 px-4">Nombre</th>
-            <th className="py-2 px-4">Descripción</th>
-            <th className="py-2 px-4">Cantidad</th>
-            <th className="py-2 px-4">Unidad</th>
-            <th className="py-2 px-4">Fecha Ingreso</th>
-            <th className="py-2 px-4">Precio</th>
-            <th className="py-2 px-4">Categoría</th>
-            <th className="py-2 px-4">Acciones</th>
+    <div className="overflow-x-auto bg-white rounded shadow">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead style={{ backgroundColor: '#00D09E' }}>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">ID </th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Nombre</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Descripción</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Cantidad</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Unidad</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Fecha Ingreso</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Precio</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Categoría</th>
+            <th className="px-6 py-3 text-left text-xs font-large text-white uppercase tracking-wider">Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white divide-y divide-gray-200">
           {inventario.map((item) => (
             <tr key={item.id} className="border-t hover:bg-gray-50">
               <td className="py-2 px-4">{item.id}</td>
