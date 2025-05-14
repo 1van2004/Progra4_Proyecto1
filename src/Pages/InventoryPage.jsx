@@ -109,13 +109,13 @@ function InventoryPage() {
           />
           <button
             onClick={handleSearch}
-            className="bg-[#00D09E] text-white px-4 py-2 rounded hover:bg-[#00B78B] transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             Buscar
           </button>
         </div>
         <button
-          className="bg-[#00D09E] text-white px-4 py-2 rounded hover:bg-[#00B78B] transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           onClick={() => {
             setProductoActual({
               id: '', nombre: '', descripcion: '', cantidad: '', unidad: '',
@@ -267,7 +267,7 @@ function InventoryPage() {
             <div className="flex justify-end gap-2 mt-4">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                className="px-4 py-2 rounded text-white bg-[#DC2626] hover:bg-[#DC2626]"
               >
                 Cancelar
               </button>
