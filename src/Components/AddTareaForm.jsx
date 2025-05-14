@@ -1,5 +1,7 @@
 import { useForm } from '@tanstack/react-form'
 import { useAddTareas } from '../Services/TareasServices'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const AddTareaForm = () => {
@@ -159,6 +161,7 @@ const AddTareaForm = () => {
             type="submit"
             disabled={!form.state.canSubmit}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+            onClick={() =>  toast.success("Tarea agregada.")}
           >
             Agregar
           </button>
