@@ -36,7 +36,7 @@ const HomePage = () => {
         className="relative h-[70vh] bg-cover bg-center flex items-center justify-center text-white"
         style={{ backgroundImage: "url('/images/water-bg.jpg')" }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#2c3e50]/80 to-[#3498db]/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-teal-900 to-teal-600 " />
         <div className="relative z-10 text-center px-6 max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
             Sistema WATER-SF
@@ -47,13 +47,13 @@ const HomePage = () => {
           <div className="flex flex-wrap justify-center gap-4">
             <Link
               to="/facturacion"
-              className="bg-white text-[#2c3e50] px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition duration-300 hover:scale-105 shadow-lg"
+              className="bg-white text-slate-800 px-8 py-3 rounded-full font-bold hover:bg-cyan-600 transition duration-300 hover:scale-105 shadow-lg"
             >
               Módulo de Facturación
             </Link>
             <Link
               to="/calidad-agua"
-              className="bg-[#3498db] text-white px-8 py-3 rounded-full font-bold hover:bg-[#2980b9] transition duration-300 hover:scale-105 shadow-lg"
+              className="bg-slate-800 text-white px-8 py-3 rounded-full font-bold hover:bg-[#2980b9] transition duration-300 hover:scale-105 shadow-lg"
             >
               Calidad del Agua
             </Link>
@@ -124,23 +124,23 @@ const HomePage = () => {
 
       {/* Footer */}
      <footer className="bg-[#2c3e50] text-white mt-12">
-  <div className="bg-gradient-to-r from-green-400 via-cyan-400 to-blue-500 text-white px-6 py-4 shadow-md">
+  <div className="bg-gradient-to-r from-teal-900 to-teal-600  text-white px-6 py-4 shadow-md">
     <div>
-      <h4 className="text-xl font-semibold mb-4">ASADA San Fernando</h4>
-      <p className="text-black">Gestión del recurso hídrico para la comunidad con eficiencia y compromiso.</p>
+      <h4 className="text-emerald-200 font-semibold">ASADA San Fernando</h4>
+      <p className="text-white">Gestión del recurso hídrico para la comunidad con eficiencia y compromiso.</p>
     </div>
     <div>
-      <h4 className="text-xl font-semibold mb-4">Contacto</h4>
-      <p className="text-black">Tel: <a href="tel:+50622223333" className="text-[#3498db] hover:underline">+506 2222 3333</a></p>
-      <p className="text-black">Email: <a href="mailto:info@asadasf.org" className="text-[#3498db] hover:underline">info@asadasf.org</a></p>
+      <h4 className="text-emerald-200 font-semibold">Contacto</h4>
+      <p className="text-white">Tel: <a href="tel:+50622223333" className="text-[#3498db] hover:underline">+506 2222 3333</a></p>
+      <p className="text-white">Email: <a href="mailto:info@asadasf.org" className="text-[#3498db] hover:underline">info@asadasf.org</a></p>
     </div>
     <div>
-      <h4 className="text-xl font-semibold mb-4">Horario</h4>
-      <p className="text-black">Lunes a Viernes: 8:00am - 4:00pm</p>
-      <p className="text-black">Sábados y Domingos: Cerrado</p>
+      <h4 className="text-emerald-200 font-semibold">Horario</h4>
+      <p className="text-white">Lunes a Viernes: 8:00am - 4:00pm</p>
+      <p className="text-white">Sábados y Domingos: Cerrado</p>
     </div>
   </div>
-  <div className="bg-[#34495e] text-center py-4 text-sm text-black">
+  <div className="text-cyan-200 font-semibold text-center py-4">
     © 2025 ASADA San Fernando. Todos los derechos reservados.
   </div>
 </footer>
