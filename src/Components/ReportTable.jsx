@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useReportes, useDeleteReporte } from '../Services/ReportService';
 import {useReactTable, getCoreRowModel, flexRender,} from '@tanstack/react-table';
-import { LoadingModal } from '../Components/ui/Modals/LoadingModal';
-import { SuccessModal } from '../Components/ui/Modals/SuccessModal';
-import { ConfirmModal } from '../Components/ui/Modals/ConfirmModal';
+import { LoadingModal } from './Modals/LoadingModal';
+import { SuccessModal } from './Modals/SuccessModal';
+import { ConfirmModal }  from './Modals/ConfirmModal';
+
 
 export default function ReportTable() {
   const { data: reportes = [], isLoading, isError } = useReportes();
