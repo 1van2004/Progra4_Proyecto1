@@ -73,7 +73,7 @@ const HomePage = () => {
               </svg>
             </div>
             <h3 className="text-xl font-bold mb-3 text-[#2c3e50]"> Consulta de Facturación </h3>
-            <p className="text-gray-600">El pepe</p>
+            <p className="text-gray-600"> Consulta de la facturacion e impresión </p>
           </div>
           
           <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow text-center border-t-4 border-[#2ecc71]">
@@ -104,16 +104,16 @@ const HomePage = () => {
           <h2 className="text-3xl font-bold text-center mb-12 text-[#2c3e50]">Nuestra Comunidad en Imágenes</h2>
           
           <Slider {...carouselSettings}>
-            {[1, 2, 3, 4, 5].map((item) => (
+            {[1, 2, 3, 4, 5 ,6 ,7 ,8].map((item) => (
               <div key={item} className="px-2">
                 <div className="relative overflow-hidden rounded-xl shadow-xl h-64 group">
                   <img 
-                    src={`/images/carousel${item}.jpg`} 
+                    src={`public/carousel/carousel${item}.jpg`} 
                     alt={`Imagen ${item}`} 
                     className="w-full h-full object-cover transform group-hover:scale-110 transition duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#2c3e50]/80 to-transparent flex items-end p-6">
-                    <p className="text-white font-bold text-lg">Título de la imagen {item}</p>
+                  
                   </div>
                 </div>
               </div>
