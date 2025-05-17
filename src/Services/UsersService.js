@@ -64,3 +64,17 @@ export const deleteUser = async (userId) => {
     throw error;
   }
 };
+// Editar usuario existente
+export const updateUser = async (updatedUser) => {
+  try {
+    const currentUsers = await fetchUsers();
+    const updatedUsers = currentUsers.map(user =>
+      user.id === updatedUser.id ? updatedUser : user
+    );
+    await saveUsers(updatedUsers);
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+    throw error;
+  }
+};
+

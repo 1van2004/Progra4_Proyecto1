@@ -56,11 +56,14 @@ const AddUsersPage = () => {
     e.preventDefault();
 
     const requiredFields = [
-      "nis", "numeroMedidor", "nombre", "apellido", "cedula",
-      "telefono", "direccion", "correo", "zona", "copiaPlano"
+      "nis", "numeroMedidor", "nombre", "apellido",
+      "cedula", "telefono", "direccion", "correo"
     ];
 
-    const emptyField = requiredFields.find((field) => !formData[field]);
+    const emptyField = requiredFields.find(
+      (field) => !formData[field] || formData[field].toString().trim() === ""
+    );
+
     if (emptyField) {
       setAlertMessage("Por favor complete todos los campos obligatorios.");
       setShowAlert(true);
@@ -89,14 +92,11 @@ const AddUsersPage = () => {
 
     const nuevoUsuario = { ...formData, id: crypto.randomUUID() };
 
-    // Guardar usuario en backend o almacenamiento
     addUser(nuevoUsuario);
 
-    // Actualizar cache react-query manualmente para reflejar cambio sin refetch
     const nuevosUsuarios = [...usersArray, nuevoUsuario];
     queryClient.setQueryData(["users"], nuevosUsuarios);
 
-    // Limpiar formulario
     setFormData({
       nis: "",
       numeroMedidor: "",
@@ -110,11 +110,10 @@ const AddUsersPage = () => {
       copiaPlano: null,
     });
 
-    // Mostrar confirmación
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
-      // navigate({ to: "/usuarios" }); // opcional: redirigir
+      // navigate({ to: "/usuarios" }); // opcional
     }, 1500);
   };
 
