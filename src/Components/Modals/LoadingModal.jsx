@@ -8,7 +8,7 @@ export const LoadingModal = () => {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ duration: 0.01 }}
+        transition={{ duration: 0.3 }}
       >
         <div className="flex flex-col items-center gap-4">
           <svg className="animate-spin h-8 w-8 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
