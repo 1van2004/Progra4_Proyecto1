@@ -1,5 +1,5 @@
 import AddTareaForm from "./AddTareaForm";
-import AddGenericModal from "./AddGenericModal";
+import AddGenericModal from "./Modals/AddGenericModal";
 import { useState, useMemo } from "react";
 
 const TareaButton = ({ tareas, onFiltrarResponsable }) => {

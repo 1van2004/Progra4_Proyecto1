@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { deleteUser, useUsers } from "../Services/UsersService";
 import { SortAsc, SortDesc } from "lucide-react";
-import AddGenericModal from "../Components/AddGenericModal";
+import AddGenericModal from "../Components/Modals/AddGenericModal";
 import EditUsersPage from "./EditUsersPage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
