@@ -82,7 +82,7 @@ function ProveedoresPage() {
   );
 
   return (
-    <div className="p-6 w-full mx-auto">
+    <div className="p-6 w-full mx-auto bg-white min-h-screen">
       <ToastContainer />
       <h1 className="text-2xl font-bold mb-4">Gestión de Proveedores</h1>
 
@@ -99,7 +99,7 @@ function ProveedoresPage() {
             setProveedorEditando(null);
             setShowModal(true);
           }}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-[#009285] text-white px-4 py-2 rounded hover:bg-[#055a55]"
         >
           Agregar Proveedor
         </button>
@@ -108,7 +108,7 @@ function ProveedoresPage() {
       <ProveedorList proveedores={filtrados} onEditar={editar} onEliminar={eliminar} />
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 overflow-auto">
+        <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 overflow-auto">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg max-h-screen overflow-y-auto mx-4 my-8">
             <h2 className="text-xl font-semibold mb-4">
               {proveedorEditando ? 'Editar Proveedor' : 'Agregar Proveedor'}
@@ -188,7 +188,7 @@ function ProveedoresPage() {
                 </button>
                 <button
                   type="submit"
-                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                  className="bg-[#009285] text-white px-4 py-2 rounded hover:bg-[#055a55]"
                 >
                   Guardar
                 </button>
