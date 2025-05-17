@@ -1,6 +1,15 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export const SuccessModal = ({ message, onClose }) => {
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onClose();
+    }, 1000); // 3000 ms = 3 segundos
+
+    return () => clearTimeout(timeout); // Limpieza si se desmonta
+  }, [onClose]);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
       <motion.div
@@ -11,16 +20,17 @@ export const SuccessModal = ({ message, onClose }) => {
         transition={{ duration: 0.3 }}
       >
         <div className="flex flex-col items-center gap-4">
-          <svg className="h-12 w-12 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className="h-12 w-12 text-green-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           <p className="text-gray-800 text-lg font-semibold">{message}</p>
-          <button
-            onClick={onClose}
-            className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md"
-          >
-            Cerrar
-          </button>
+          
         </div>
       </motion.div>
     </div>
