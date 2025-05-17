@@ -1,15 +1,17 @@
-import NavBar from "./NavBar"
-import { Outlet } from "@tanstack/react-router"
+import { Outlet } from "@tanstack/react-router";
+import NavBar from "./NavBar";
+import Footer from "./Footer";
 
 const RootLayout = () => {
-    return (
-        <div>
-            <NavBar/>
-            <div className = "countainer mx-auto px-4 py-8"></div>
-            <Outlet/>
-        </div>
-        
-    )
-}
+  return (
+    <div className="flex flex-col min-h-screen">
+      <NavBar />
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
 export default RootLayout;
