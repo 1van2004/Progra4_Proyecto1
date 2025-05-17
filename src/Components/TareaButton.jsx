@@ -30,9 +30,7 @@ const TareaButton = ({ tareas, onFiltrarResponsable }) => {
       {/* Botón para agregar */}
       <button
         onClick={() => setShowAddModal(true)}
-        className="px-5 py-2.5 text-sm font-medium text-white 
-                   bg-blue-600 rounded-lg hover:bg-blue-700 
-                   focus:outline-none focus:ring-4 focus:ring-blue-300"
+        className="bg-[#009285] text-white px-4 py-2 rounded hover:bg-[#055a55]"
       >
         Agregar Tareas
       </button>

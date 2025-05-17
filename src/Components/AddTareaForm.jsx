@@ -160,7 +160,7 @@ const AddTareaForm = () => {
           <button
             type="submit"
             disabled={!form.state.canSubmit}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+            className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2 rounded-lg"
             onClick={() =>  toast.success("Tarea agregada.")}
           >
             Agregar
@@ -168,7 +168,7 @@ const AddTareaForm = () => {
           <button
             type="button"
             onClick={() => form.reset()}
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
           >
             Limpiar
           </button>
