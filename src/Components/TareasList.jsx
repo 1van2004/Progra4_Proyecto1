@@ -10,6 +10,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import TareaButton from "./TareaButton"
 import AddGenericModal from "./Modals/AddGenericModal"
 import EditTareaForm from "./EditTareaForm"
+import AddTareaForm from "./AddTareaForm";
 
 const TareasList = () => {
   const queryClient = useQueryClient();
@@ -76,13 +77,13 @@ const handleDelete = (tarea) => {
       cell: ({ row }) => (
         <div className="flex space-x-2">
           <button
-            className="text-blue-600 hover:underline mr-2"
+            className="bg-teal-800 hover:bg-teal-900 text-white text-xs px-5 py-1 rounded-full shadow-sm opacity-90 hover:opacity-100"
             onClick={() => handleEditar(row.original)}
           >
             Editar
           </button>
           <button
-            className="text-red-600 hover:underline"
+            className="bg-[#e2504c] hover:bg-[#c63637] text-white text-xs px-4 py-1 rounded-full shadow-sm"
             onClick={() => handleDelete(row.original)}
           >
             Borrar
@@ -121,7 +122,7 @@ return(
 
     <div className="overflow-x-auto bg-white rounded shadow">
         <table className="min-w-full divide-y divide-gray-200">
-            <thead style={{ backgroundColor: '#00D09E' }}>
+            <thead className="bg-gradient-to-r from-teal-900 to-teal-600  text-white px-6 py-4 shadow-md">
                 {table.getHeaderGroups().map(headerGroup => (
                     <tr key={headerGroup.id}>
                         {headerGroup.headers.map(header => (
@@ -171,6 +172,7 @@ return(
           />
         )}
       </AddGenericModal>
+
     </div>
   );
 };
