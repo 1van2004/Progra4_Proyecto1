@@ -21,7 +21,6 @@ const Footer = () => (
       </div>
     </div>
 
-  
     <div className="text-cyan-200 font-semibold text-center py-4">
       © 2025 ASADA San Fernando. Todos los derechos reservados.
     </div>
