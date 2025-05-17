@@ -1,10 +1,26 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useReportes, useDeleteReporte } from '../Services/ReportService';
-import {useReactTable, getCoreRowModel, flexRender,} from '@tanstack/react-table';
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+} from '@tanstack/react-table';
 import { LoadingModal } from './Modals/LoadingModal';
 import { SuccessModal } from './Modals/SuccessModal';
-import { ConfirmModal }  from './Modals/ConfirmModal';
+import { ConfirmModal } from './Modals/ConfirmModal';
 
+// 👉 Función para formatear la fecha
+const formatFechaHora = (isoString) => {
+  const fecha = new Date(isoString);
+  return fecha.toLocaleString('es-CR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+};
 
 export default function ReportTable() {
   const { data: reportes = [], isLoading, isError } = useReportes();
@@ -15,6 +31,20 @@ export default function ReportTable() {
   const [showLoading, setShowLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+
+
+  useEffect(() => {
+    if (inputValue.trim() === '') {
+      setSearchTerm('');
+    }
+  }, [inputValue]);
+
+  const handleSearch = () => {
+    setSearchTerm(inputValue.trim().toLowerCase());
+  };
 
   const handleConfirmDelete = () => {
     if (!toDeleteId) return;
@@ -34,11 +64,34 @@ export default function ReportTable() {
     });
   };
 
+  const filteredReportes = useMemo(() => {
+    if (!searchTerm) return reportes;
+
+    return reportes.filter((reporte) => {
+      return (
+        reporte.nombre.toLowerCase().includes(searchTerm) ||
+        reporte.direccion.toLowerCase().includes(searchTerm) ||
+        reporte.tipo.toLowerCase().includes(searchTerm) ||
+        reporte.descripcion.toLowerCase().includes(searchTerm) ||
+        reporte.ubicacion.toLowerCase().includes(searchTerm) ||
+        formatFechaHora(reporte.fechaHora).toLowerCase().includes(searchTerm)
+      );
+    });
+  }, [reportes, searchTerm]);
+
   const columns = [
     { header: 'Nombre', accessorKey: 'nombre' },
     { header: 'Dirección', accessorKey: 'direccion' },
     { header: 'Tipo', accessorKey: 'tipo' },
-    { header: 'Fecha y hora', accessorKey: 'fechaHora' },
+    { header: 'Descripción', accessorKey: 'descripcion' },
+    { header: 'Ubicación', accessorKey: 'ubicacion' },
+    {
+      header: 'Fecha y hora',
+      accessorKey: 'fechaHora',
+      cell: ({ row }) => (
+        <span>{formatFechaHora(row.original.fechaHora)}</span>
+      ),
+    },
     {
       header: 'Acciones',
       cell: ({ row }) => (
@@ -47,7 +100,7 @@ export default function ReportTable() {
             setToDeleteId(row.original.id);
             setShowConfirm(true);
           }}
-          className="text-red-600 underline"
+          className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200 transition"
         >
           Eliminar
         </button>
@@ -56,7 +109,7 @@ export default function ReportTable() {
   ];
 
   const table = useReactTable({
-    data: reportes,
+    data: filteredReportes,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -66,46 +119,78 @@ export default function ReportTable() {
 
   return (
     <>
-      <div className="bg-white p-4 rounded-xl shadow">
-        <h2 className="text-xl font-bold mb-4 text-green-700">
+      <div className="bg-white p-4 rounded-xl shadow border border-green-200">
+        <h2 className="text-2xl font-bold mb-6 text-[#00796B] text-center uppercase tracking-wide">
           Reportes Registrados
         </h2>
-        <table className="min-w-full table-auto border border-green-300 text-sm">
-          <thead className="bg-green-600 text-white">
-            {table.getHeaderGroups().map((hg) => (
-              <tr key={hg.id}>
-                {hg.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="p-2 text-left border-b border-green-200"
+
+        <div className="mb-4 flex items-center gap-2 max-w-sm">
+          <input
+            type="text"
+            placeholder="Buscar reporte..."
+            className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-green-600"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
+          />
+          <button
+            onClick={handleSearch}
+            className="bg-[#00796B] text-white px-4 py-2 rounded hover:bg-[#005944] transition"
+          >
+            Buscar
+          </button>
+        </div>
+
+        {filteredReportes.length === 0 ? (
+          <p className="text-center text-red-600 font-semibold">
+            No se encontraron reportes que coincidan con la búsqueda.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-auto border border-green-300 text-sm">
+              <thead className="bg-teal-700 text-white">
+                {table.getHeaderGroups().map((hg) => (
+                  <tr key={hg.id}>
+                    {hg.headers.map((header) => (
+                      <th
+                        key={header.id}
+                        className="p-3 text-left border-b border-green-200"
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.map((row, index) => (
+                  <tr
+                    key={row.id}
+                    className={`border-b border-green-100 ${
+                      index % 2 === 0 ? 'bg-green-50' : 'bg-cyan-50'
+                    } hover:bg-cyan-100 transition`}
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </th>
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="p-3 text-green-900">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="border-b border-green-100 hover:bg-green-50"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-2">
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {showLoading && <LoadingModal />}
