@@ -15,6 +15,8 @@ function InventoryPage() {
     id: '', nombre: '', descripcion: '', cantidad: '', unidad: '',
     fechaIngreso: '', precio: '', moneda: 'colones', categoria: ''
   });
+  const [productoAEliminar, setProductoAEliminar] = useState(null);
+
 
   useEffect(() => {
     obtenerInventario().then(setInventory);
@@ -74,12 +76,17 @@ function InventoryPage() {
     setShowModal(true);
   };
 
-  const handleEliminar = async (id) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
-    const nuevaLista = inventory.filter(item => item.id !== id);
+  const confirmarEliminacion = (item) => {
+    setProductoAEliminar(item);
+  };
+
+  const handleEliminar = async () => {
+    if (!productoAEliminar) return;
+    const nuevaLista = inventory.filter(item => item.id !== productoAEliminar.id);
     setInventory(nuevaLista);
     await guardarInventario(nuevaLista);
     toast.success("Producto eliminado correctamente.");
+    setProductoAEliminar(null);
   };
 
   const filteredInventory = inventory.filter(item =>
@@ -132,7 +139,7 @@ function InventoryPage() {
       <InventarioList
         inventario={filteredInventory}
         onEditar={handleEditar}
-        onEliminar={handleEliminar}
+        onEliminar={confirmarEliminacion}
       />
 
       {showModal && (
@@ -240,7 +247,7 @@ function InventoryPage() {
                   setProductoActual({ ...productoActual, unidad: e.target.value })
                 }
               >
-                <option value="">Seleccione una unidad</option>
+                <option value="" disabled hidden>Seleccione una unidad</option>
                 <option value="metros lineales">Metros lineales</option>
                 <option value="litros">Litros</option>
                 <option value="milímetros">Milímetros</option>
@@ -257,7 +264,7 @@ function InventoryPage() {
                   setProductoActual({ ...productoActual, categoria: e.target.value })
                 }
               >
-                <option value="">Seleccione una categoría</option>
+                <option value="" disabled hidden>Seleccione una categoría</option>
                 <option value="administración">Administración</option>
                 <option value="limpieza">Limpieza</option>
                 <option value="mantenimiento">Mantenimiento</option>
@@ -281,8 +288,34 @@ function InventoryPage() {
           </div>
         </div>
       )}
+     
+      {productoAEliminar && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm mx-4">
+            <h2 className="text-xl font-semibold mb-4">¿Eliminar producto?</h2>
+            <p className="mb-4">
+              ¿Estás seguro de que deseas eliminar el producto{' '}
+              <strong>{productoAEliminar.nombre}</strong> con ID{' '}
+              <strong>{productoAEliminar.id}</strong>?
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setProductoAEliminar(null)}
+                className="px-4 py-2 rounded text-white bg-gray-500 hover:bg-gray-600"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleEliminar}
+                className="px-4 py-2 rounded text-white bg-red-600 hover:bg-red-700"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
 export default InventoryPage;
