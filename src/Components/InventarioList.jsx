@@ -40,7 +40,7 @@ function InventarioList({ inventario, onEditar, onEliminar }) {
                   Editar
                 </button>
                 <button
-                  onClick={() => onEliminar(item.id)}
+                  onClick={() => onEliminar(item)}
                   className="text-red-600 hover:underline"
                 >
                   Eliminar
