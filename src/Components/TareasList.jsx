@@ -8,7 +8,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import TareaButton from "./TareaButton"
-import AddGenericModal from "./AddGenericModal"
+import AddGenericModal from "./Modals/AddGenericModal"
 import EditTareaForm from "./EditTareaForm"
 
 const TareasList = () => {
