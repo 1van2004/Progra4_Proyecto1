@@ -1,16 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { useAddReporte } from '../Services/ReportService';
+import { useAddReporte } from '../services/reportService';
 import { v4 as uuidv4 } from 'uuid';
-import { LoadingModal} from '../Components/Modals/LoadingModal';
-import { SuccessModal } from '../Components/Modals/SuccessModal';
-import { Dialog } from '@headlessui/react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
-import { motion } from 'framer-motion';
-import { FaClipboardCheck } from 'react-icons/fa';
-import 'swiper/css';
-import 'swiper/css/pagination';
+import { LoadingModal } from '../components/Modals/LoadingModal';
+import { SuccessModal } from '../components/Modals/SuccessModal';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 const tipos = [
   { nombre: 'Fuga en calle', imagen: '/Imagenes/2.jfif', descripcion: 'Agua brotando en plena calle, posible daño en la red principal.' },
@@ -21,15 +15,18 @@ const tipos = [
   { nombre: 'Agua acumulación de agua', imagen: '/Imagenes/5.webp', descripcion: 'Charcos o acumulación sin origen claro, posible fuga subterránea.' },
   { nombre: 'Olor/sabor extraño en el agua', imagen: '/Imagenes/agua_sucia.jfif', descripcion: 'El agua tiene características inusuales que deben ser investigadas.' },
   { nombre: 'Baja presión en la zona', imagen: '/Imagenes/baja precion.jpg', descripcion: 'Reducción notoria en la presión del agua en la vivienda o barrio.' },
-  
 ];
 
 export default function ReporteFormPage() {
   const addReporte = useAddReporte();
+  const carruselRef = useRef(null);
+
   const [showLoading, setShowLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
-  const [showForm, setShowForm] = useState(false);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [tipoSeleccionado, setTipoSeleccionado] = useState(null);
+  const [tarjetaExpandida, setTarjetaExpandida] = useState(null);
 
   const form = useForm({
     defaultValues: {
@@ -52,7 +49,9 @@ export default function ReporteFormPage() {
         setSuccessMsg('✅ Reporte enviado exitosamente');
         setShowSuccess(true);
         form.reset();
-        setShowForm(false);
+        setMostrarFormulario(false);
+        setTipoSeleccionado(null);
+        setTarjetaExpandida(null);
       } catch (err) {
         console.error('❌ Error al enviar:', err);
         alert('Error al enviar el reporte');
@@ -62,72 +61,152 @@ export default function ReporteFormPage() {
     },
   });
 
+  function abrirFormulario(tipo = null) {
+    setMostrarFormulario(true);
+    setTipoSeleccionado(tipo);
+    form.setFieldValue('tipo', tipo ? tipo.nombre : '');
+  }
 
+  function scrollCarrusel(direccion) {
+    const contenedor = carruselRef.current;
+    const distancia = 300;
+    if (contenedor) {
+      contenedor.scrollBy({ left: direccion === 'derecha' ? distancia : -distancia, behavior: 'smooth' });
+    }
+  }
 
   return (
-    <div className="bg-gradient-to-br from-white via-cyan-50 to-teal-50 min-h-screen py-10 px-4 flex flex-col items-center">
-  
-      <div className="text-center max-w-2xl mb-10">
-        <h2 className="text-4xl font-extrabold text-teal-700 mb-4 drop-shadow-sm">Reportes de Averías</h2>
-        <p className="text-gray-700 text-lg leading-relaxed">
-          En esta sección podrás reportar cualquier tipo de avería relacionada con el sistema de agua potable. Seleccioná el tipo que observaste y completá el formulario para que el equipo técnico lo atienda lo antes posible.
+    <div className="space-y-10 p-6">
+      {/* Cuadro principal de introducción */}
+      <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow border border-teal-200 text-center">
+        <h1 className="text-3xl font-extrabold bg-gradient-to-r from-teal-900 to-teal-600 bg-clip-text text-transparent mb-2">
+          Realizar reporte
+        </h1>
+        <p className="text-gray-700">
+          En este apartado podrá realizar reportes relacionados con fugas de agua y otras anomalías en el sistema. Complete la información con el mayor detalle posible para facilitar la atención.
         </p>
       </div>
 
-      <div className="w-full max-w-6xl mb-12 p-6 bg-white rounded-3xl shadow-xl border border-cyan-100">
-        <Swiper
-          spaceBetween={30}
-          slidesPerView={3}
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          loop={true}
-          modules={[Pagination, Autoplay]}
-          className="pb-8"
+      {/* Carrusel */}
+      <div className="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow border border-teal-200 relative">
+        <h2 className="text-2xl font-extrabold bg-gradient-to-r from-teal-900 to-teal-600 bg-clip-text text-transparent text-center mb-4">
+          Seleccione el tipo de reporte
+        </h2>
+
+        <button
+          onClick={() => scrollCarrusel('izquierda')}
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-gradient-to-r from-teal-900 to-teal-600 text-white border border-green-300 rounded-full p-2 shadow hover:from-teal-800 hover:to-teal-500 transition"
         >
-          {tipos.map((tipo) => (
-            <SwiperSlide key={tipo.nombre}>
-              <motion.div
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.98 }}
-                className="rounded-2xl border-t-4 border-teal-500 bg-white shadow-lg hover:shadow-2xl transition transform p-4 h-full flex flex-col justify-between"
-              >
-                <img src={tipo.imagen} alt={tipo.nombre} className="rounded-xl w-full h-40 object-cover shadow-md" />
-                <div className="text-center mt-4">
-                  <p className="text-lg font-bold text-gray-800 mb-1">{tipo.nombre}</p>
-                  <p className="text-sm text-gray-600 italic">{tipo.descripcion}</p>
-                </div>
-              </motion.div>
-            </SwiperSlide>
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+
+        {/* Carrusel */}
+        <div
+          ref={carruselRef}
+          className="overflow-x-auto no-scrollbar flex space-x-4 px-10 py-4 scroll-smooth transition-transform duration-300"
+        >
+          {tipos.map((tipo, index) => (
+            <div
+              key={index}
+              className="min-w-[300px] max-w-[300px] bg-white rounded-xl shadow-md border border-green-200 hover:shadow-lg transition duration-300 cursor-pointer"
+              onClick={() => setTarjetaExpandida(tipo)}
+            >
+              <img src={tipo.imagen} alt={tipo.nombre} className="rounded-t-xl w-full h-40 object-cover" />
+              <div className="p-4">
+                <h3 className="text-lg font-extrabold bg-gradient-to-r from-teal-900 to-teal-600 bg-clip-text text-transparent text-center">
+                  {tipo.nombre}
+                </h3>
+              </div>
+            </div>
           ))}
-        </Swiper>
+        </div>
+
+        <button
+          onClick={() => scrollCarrusel('derecha')}
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-gradient-to-r from-teal-900 to-teal-600 text-white border border-green-300 rounded-full p-2 shadow hover:from-teal-800 hover:to-teal-500 transition"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      </div>
+      
+      <div className="text-center">
+        <button
+          onClick={() => abrirFormulario()}
+          className="px-6 py-3 bg-gradient-to-r from-teal-900 to-teal-600 text-white rounded-lg shadow hover:from-teal-800 hover:to-teal-500 transition"
+        >
+          Realizar un reporte
+        </button>
       </div>
 
-      <button
-        onClick={() => setShowForm(true)}
-        className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-cyan-500 hover:from-teal-700 hover:to-cyan-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition"
-      >
-        <FaClipboardCheck className="text-xl" /> Realizar Reporte
-      </button>
+      {/* Tarjeta */}
+      {tarjetaExpandida && (
+        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-xl shadow-xl max-w-md w-full relative space-y-4">
+            <button
+              onClick={() => setTarjetaExpandida(null)}
+              title="Cerrar"
+              className="absolute top-3 right-3 bg-white/80 hover:bg-white text-gray-800 hover:text-red-600 border border-gray-300 rounded-full p-1 shadow-md transition-all duration-200"
+          >
+           <X className="w-5 h-5" />
+          </button>
 
-      <Dialog open={showForm} onClose={() => setShowForm(false)} className="fixed z-50 inset-0 overflow-y-auto">
-        <div className="flex items-center justify-center min-h-screen px-4 bg-black/40 backdrop-blur-sm">
-          <Dialog.Panel className="bg-white w-full max-w-xl rounded-2xl p-8 shadow-2xl">
-            <Dialog.Title className="text-2xl font-bold mb-6 text-teal-700 text-center">Formulario de Avería</Dialog.Title>
+            <img src={tarjetaExpandida.imagen} alt={tarjetaExpandida.nombre} className="w-full h-48 object-cover rounded" />
+            <h3 className="text-xl font-extrabold bg-gradient-to-r from-teal-900 to-teal-600 bg-clip-text text-transparent text-center">{tarjetaExpandida.nombre}</h3>
+            <p className="text-gray-800 text-center">{tarjetaExpandida.descripcion}</p>
+            <button
+              onClick={() => {
+                abrirFormulario(tarjetaExpandida);
+                setTarjetaExpandida(null);
+              }}
+              className="w-full bg-gradient-to-r from-teal-900 to-teal-600 text-white py-2 rounded hover:from-teal-800 hover:to-teal-500 transition"
+            >
+              Realizar este reporte
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Formulario emergente */}
+      {mostrarFormulario && (
+        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-xl relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => {
+                setMostrarFormulario(false);
+                setTipoSeleccionado(null);
+             }}
+              title="Cerrar"
+              className="absolute top-3 right-3 bg-white/80 hover:bg-white text-gray-800 hover:text-red-600 border border-gray-300 rounded-full p-1 shadow-md transition-all duration-200"
+        >
+           <X className="w-5 h-5" />
+            </button>
+
+            {tipoSeleccionado && (
+              <div className="mb-4 p-4 border border-green-300 rounded bg-green-50">
+                <h3 className="text-lg font-extrabold bg-gradient-to-r from-teal-900 to-teal-600 bg-clip-text text-transparent text-center">{tipoSeleccionado.nombre}</h3>
+                <p className="mt-2 text-green-900 text-center">{tipoSeleccionado.descripcion}</p>
+              </div>
+            )}
+
+            <h2 className="text-xl font-extrabold bg-gradient-to-r from-teal-900 to-teal-600 bg-clip-text text-transparent mb-4 text-center">
+              Formulario de reporte
+            </h2>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 form.handleSubmit();
               }}
-              className="space-y-5"
+              className="space-y-4"
             >
+  
               <form.Field name="nombre">
                 {(field) => (
                   <input
                     type="text"
-                    placeholder="Nombre completo"
+                    placeholder="Nombre"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full border rounded p-2"
                     required
                   />
                 )}
@@ -136,10 +215,10 @@ export default function ReporteFormPage() {
               <form.Field name="direccion">
                 {(field) => (
                   <textarea
-                    placeholder="Dirección donde ocurre la avería"
+                    placeholder="Dirección de la avería"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full border rounded p-2"
                     required
                   />
                 )}
@@ -150,12 +229,15 @@ export default function ReporteFormPage() {
                   <select
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full border rounded p-2"
                     required
+                    disabled={!!tipoSeleccionado}
                   >
-                    <option value="">Seleccione un tipo de avería</option>
-                    {tipos.map((tipo) => (
-                      <option key={tipo.nombre} value={tipo.nombre}>{tipo.nombre}</option>
+                    {!tipoSeleccionado && <option value="">Seleccione un tipo de avería</option>}
+                    {tipos.map((t) => (
+                      <option key={t.nombre} value={t.nombre}>
+                        {t.nombre}
+                      </option>
                     ))}
                   </select>
                 )}
@@ -164,10 +246,10 @@ export default function ReporteFormPage() {
               <form.Field name="descripcion">
                 {(field) => (
                   <textarea
-                    placeholder="Descripción detallada del problema"
+                    placeholder="Descripción detallada de la avería"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full border rounded p-2"
                     required
                   />
                 )}
@@ -176,39 +258,28 @@ export default function ReporteFormPage() {
               <form.Field name="ubicacion">
                 {(field) => (
                   <input
-                    placeholder="Referencia de ubicación (ej. frente al súper tal)"
+                    placeholder="Ubicación referencial"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full border rounded p-2"
                     required
                   />
                 )}
               </form.Field>
 
-              <div className="flex justify-end gap-4 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2 rounded-lg"
-                >
-                  Enviar Reporte
-                </button>
-              </div>
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-teal-900 to-teal-600 text-white py-2 rounded hover:from-teal-800 hover:to-teal-500 transition"
+              >
+                Enviar reporte
+              </button>
             </form>
-          </Dialog.Panel>
+          </div>
         </div>
-      </Dialog>
+      )}
 
       {showLoading && <LoadingModal />}
-      {showSuccess && (
-        <SuccessModal message={successMsg} onClose={() => setShowSuccess(false)} />
-      )}
+      {showSuccess && <SuccessModal message={successMsg} onClose={() => setShowSuccess(false)} />}
     </div>
   );
 }
