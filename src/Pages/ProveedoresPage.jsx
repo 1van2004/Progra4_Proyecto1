@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ProveedorList from '../Components/ProveedorList';
-import { obtenerProveedores, guardarProveedores } from '../Services/ProveedoresService';
+import {
+  obtenerProveedores,
+  crearProveedor,
+  editarProveedor,
+  eliminarProveedor
+} from '../Services/ProveedoresService';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -20,10 +26,10 @@ function ProveedoresPage() {
 
   const guardar = async (evento) => {
     evento.preventDefault();
-
+  
     const form = evento.target;
+  
     const nuevoProveedor = {
-      id: proveedorEditando ? proveedorEditando.id : Date.now(),
       nombreEmpresa: form.nombreEmpresa.value.trim(),
       nombreRepresentante: form.nombreRepresentante.value.trim(),
       cedulaRepresentante: form.cedulaRepresentante.value.trim(),
@@ -32,28 +38,33 @@ function ProveedoresPage() {
       descripcionProductos: form.descripcionProductos.value.trim(),
       numeroCuenta: form.numeroCuenta.value.trim(),
     };
-
+  
     const validacion = Object.values(nuevoProveedor).every(Boolean);
     if (!validacion) {
       toast.error('Todos los campos son obligatorios');
       return;
     }
-
+  
     let nuevaLista;
     if (proveedorEditando) {
+      nuevoProveedor.id = proveedorEditando.id;
       nuevaLista = proveedores.map((p) => (p.id === proveedorEditando.id ? nuevoProveedor : p));
+      await editarProveedor(nuevoProveedor);
+      toast.success("Proveedor editado correctamente.");
     } else {
-      nuevaLista = [...proveedores, nuevoProveedor];
+      const proveedorConIdUI = { ...nuevoProveedor, id: Date.now() }; // Solo para mostrar en UI
+      nuevaLista = [...proveedores, proveedorConIdUI];
+      await crearProveedor(nuevoProveedor);
       toast.success("Proveedor agregado correctamente.");
     }
-
+  
     setProveedores(nuevaLista);
-    await guardarProveedores(nuevaLista);
-
     setProveedorEditando(null);
     setShowModal(false);
     form.reset();
   };
+  
+  
 
   const editar = (prov) => {
     setProveedorEditando(prov);
@@ -62,12 +73,15 @@ function ProveedoresPage() {
 
   const eliminar = async (id) => {
     if (!window.confirm('¿Seguro que deseas eliminar este proveedor?')) return;
-
+  
     const nuevaLista = proveedores.filter((p) => p.id !== id);
     setProveedores(nuevaLista);
-    await guardarProveedores(nuevaLista);
+  
+    await eliminarProveedor(id);
     toast.success("Proveedor eliminado correctamente.");
   };
+  
+  
 
   const cancelForm = () => {
     setProveedorEditando(null);
