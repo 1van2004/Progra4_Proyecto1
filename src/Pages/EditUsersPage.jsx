@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { updateUser } from "../Services/UsersService"; // asegúrate que esta ruta es correcta
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext.jsx";
+import Login from "../Components/Login";
 
 const EditUsersPage = ({ usuario, onClose, onUserUpdated }) => {
+  const { user } = useContext(AuthContext)
+
   const [formData, setFormData] = useState(null);
 
   useEffect(() => {
@@ -32,8 +37,15 @@ const EditUsersPage = ({ usuario, onClose, onUserUpdated }) => {
 
   if (!formData) return <div className="p-4">Cargando datos...</div>;
 
+
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 p-4">
+
+    <div>
+    {user ? <div className="p-4">
+
+
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 p-4">
       <div className="bg-gradient-to-r from-teal-900 to-teal-600 p-1 rounded-xl max-w-3xl w-full mx-auto">
         <div className="bg-white p-6 rounded-xl border border-teal-700 shadow-xl">
           <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
@@ -100,6 +112,12 @@ const EditUsersPage = ({ usuario, onClose, onUserUpdated }) => {
         </div>
       </div>
     </div>
+
+    </div>
+        : <Login />
+    }
+</div>
+
   );
 };
 
