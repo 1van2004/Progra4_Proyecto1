@@ -4,6 +4,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { obtenerInventario, guardarInventario } from '../Services/InventarioServices';
 import InventarioList from '../Components/InventarioList';
 import logo from '../assets/login.png';
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext.jsx";
+import Login from "../Components/Login";
 
 function InventoryPage() {
   const [search, setSearch] = useState('');
@@ -95,8 +98,13 @@ function InventoryPage() {
     item.categoria.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const { user } = useContext(AuthContext)
+
   return (
-    <div className="p-4 md:p-8">
+
+    <div>
+    {user ? <div className="p-4">
+      <div className="p-4 md:p-8">
       <ToastContainer />
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
@@ -316,6 +324,11 @@ function InventoryPage() {
         </div>
       )}
     </div>
+    </div>
+        : <Login />
+    }
+</div>
+    
   );
 }
 export default InventoryPage;

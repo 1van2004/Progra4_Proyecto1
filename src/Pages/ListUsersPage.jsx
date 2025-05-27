@@ -4,8 +4,11 @@ import { SortAsc, SortDesc } from "lucide-react";
 import AddGenericModal from "../Components/Modals/AddGenericModal";
 import EditUsersPage from "./EditUsersPage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext.jsx";
+import Login from "../Components/Login";
 const ListUsersPage = () => {
+    const { user } = useContext(AuthContext)
   const { data: users, isLoading, isError } = useUsers();
   const queryClient = useQueryClient();
 
@@ -100,7 +103,10 @@ const ListUsersPage = () => {
   if (isError) return <div className="text-center text-red-500">Error al cargar usuarios.</div>;
 
   return (
-    <div className="relative max-w-7xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl overflow-hidden">
+    
+    <div>
+    {user ? <div className="p-4">
+      <div className="relative max-w-7xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl overflow-hidden">
       <h2 className="text-2xl font-bold text-blue-900 mb-6 text-center">Lista de Usuarios</h2>
 
       {showNotification && (
@@ -286,6 +292,11 @@ const ListUsersPage = () => {
 
       <AddGenericModal />
     </div>
+    </div>
+        : <Login />
+    }
+</div>
+
   );
 };
 

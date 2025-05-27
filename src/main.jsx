@@ -12,12 +12,9 @@ const queryClient = new QueryClient()
 
 // Renderizar la aplicación
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      {/* Proveedor de Router y QueryClient */}
-      <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-      </QueryClientProvider>
     </AuthProvider>
-  </StrictMode>
+  </QueryClientProvider>
 )

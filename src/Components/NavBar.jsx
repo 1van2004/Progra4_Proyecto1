@@ -1,7 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext.jsx";
+import Login from "../Components/Login";
 
 const NavBar = () => {
+  const { user } = useContext(AuthContext)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -25,7 +29,10 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-teal-900 to-teal-600  text-white px-6 py-4 shadow-md">
+
+    <>
+    {user ? 
+      <nav className="bg-gradient-to-r from-teal-900 to-teal-600  text-white px-6 py-4 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo WATER-SF alineado a la izquierda */}
         <div className="text-xl font-bold tracking-tight">
@@ -53,6 +60,7 @@ const NavBar = () => {
             Lista de Reportes
           </Link>
 
+
           {/* Dropdown de Gestión de Usuarios */}
           <div className="relative" ref={dropdownRef}>
             <button
@@ -79,10 +87,39 @@ const NavBar = () => {
                 </Link>
               </div>
             )}
+            
           </div>
+          <Link to="/login" className="text-[15px] font-medium hover:text-gray-300 transition-colors">
+            Logout
+          </Link>
         </div>
       </div>
     </nav>
+
+        : <nav className="bg-gradient-to-r from-teal-900 to-teal-600  text-white px-6 py-4 shadow-md">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          {/* Logo WATER-SF alineado a la izquierda */}
+          <div className="text-xl font-bold tracking-tight">
+            WATER-SF
+          </div>
+  
+          {/* Menú alineado a la derecha */}
+          <div className="flex space-x-6 items-center">
+            <Link to="/" className="text-[15px] font-medium hover:text-gray-300 transition-colors">
+              Inicio
+            </Link>
+            <Link to="/reportForms" className="text-[15px] font-medium hover:text-gray-300 transition-colors">
+              Reportes
+            </Link>
+            <Link to="/login" className="text-[15px] font-medium hover:text-gray-300 transition-colors">
+              Login
+            </Link>
+          </div>
+        </div>
+      </nav>
+    }
+</>
+    
   );
 };
 

@@ -9,7 +9,7 @@ import InventoryPage from "./Pages/InventoryPage";
 import ListUsersPage from "./Pages/ListUsersPage";
 import AddUsersPage from "./Pages/AddUsersPage";
 import EditUsersPage from "./Pages/EditUsersPage";
-
+import LoginPage from "./Pages/LoginPage";
 // Definición de la ruta raíz
 const rootRoute = createRootRoute({
   component: RootLayout,
@@ -70,7 +70,11 @@ const editarUsuarioRoute = createRoute({
   component: EditUsersPage,
 });
 
-
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: LoginPage,
+}); 
 // Agregar rutas al root
 rootRoute.addChildren([
   homeRoute,
@@ -82,6 +86,7 @@ rootRoute.addChildren([
   listaUsuariosRoute,
   agregarUsuarioRoute,
   editarUsuarioRoute,
+  loginRoute
 ]);
 
 
