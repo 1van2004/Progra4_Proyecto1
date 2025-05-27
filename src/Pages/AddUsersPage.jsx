@@ -3,8 +3,11 @@ import { useNavigate } from "@tanstack/react-router";
 import UserForm from "../Components/UserForm";
 import { useUsers, addUser } from "../Services/UsersService";
 import { useQueryClient } from "@tanstack/react-query";
-
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext.jsx";
+import Login from "../Components/Login";
 const AddUsersPage = () => {
+      const { user } = useContext(AuthContext)
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -121,6 +124,8 @@ const AddUsersPage = () => {
 
   return (
     <div>
+    {user ? <div className="p-4">
+      <div>
       {showAlert && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full">
@@ -153,6 +158,11 @@ const AddUsersPage = () => {
         submitText="Guardar Usuario"
       />
     </div>
+    </div>
+        : <Login />
+    }
+</div>
+    
   );
 };
 
