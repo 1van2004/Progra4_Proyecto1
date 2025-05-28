@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useUpdateTarea } from "../Services/TareasServices";
+import { useEditarTarea } from "../Services/TareasServices";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -19,7 +19,7 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
     }
   }, [tarea]);
 
-  const { mutate } = useUpdateTarea();
+  const { mutate } = useEditarTarea();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,10 +33,13 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
     e.preventDefault();
     mutate(formData, {
       onSuccess: () => {
-        if (onSuccess) onSuccess(); // cerrar modal o refrescar lista
-      }
-    });
-  };
+        toast.success("Tarea editada.");
+    if (onSuccess) onSuccess();
+    queryClient.invalidateQueries(['tareas']);
+  }
+    
+});
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -111,6 +114,7 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
       </button>
     </form>
   );
+
 };
 
 export default EditTareaForm;
