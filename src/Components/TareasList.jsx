@@ -1,8 +1,7 @@
 import { useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { useQueryClient } from '@tanstack/react-query';
-import { useTareas } from "../Services/TareasServices";
-import { deleteTarea } from "../Services/TareasServices";
+import { eliminarTarea, useObtenerTareas } from "../Services/TareasServices";
 import { ToastContainer, toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,7 +13,7 @@ import AddTareaForm from "./AddTareaForm";
 
 const TareasList = () => {
   const queryClient = useQueryClient();
-const { data, isLoading, isError, error } = useTareas();
+const { data, isLoading, isError, error } = useObtenerTareas();
 const tareas = useMemo(() => data ?? [], [data]); 
 
  const [filtroResponsable, setFiltroResponsable] = useState("");
@@ -41,7 +40,7 @@ const handleDelete = (tarea) => {
         label: 'Sí, borrar',
         onClick: async () => {
           try {
-            await deleteTarea(tarea.id);
+            await eliminarTarea(tarea.id);
             toast.success("Tarea eliminada correctamente.");
             queryClient.invalidateQueries(['tareas']);
           } catch (error) {
@@ -68,10 +67,10 @@ const handleDelete = (tarea) => {
     const columns = useMemo(
         () => [
             { header: 'Descripcion', accessorKey: 'description' },
-            { header: 'Fecha de inicio', accessorKey: 'startdate' },
-            { header: 'Fecha de fin', accessorKey: 'enddate' },
-            { header: 'Persona a cargo', accessorKey: 'perincharge' },
-            { header: 'Nivel de Prioridad', accessorKey: 'Priority' },
+            { header: 'Fecha de inicio', accessorKey: 'startDate' },
+            { header: 'Fecha de fin', accessorKey: 'endDate' },
+            { header: 'Persona a cargo', accessorKey: 'perInCharge' },
+            { header: 'Nivel de Prioridad', accessorKey: 'priority' },
             {
       header: 'Acciones',
       cell: ({ row }) => (
@@ -179,3 +178,5 @@ return(
 
 
 export default TareasList
+
+

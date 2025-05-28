@@ -1,20 +1,24 @@
 import { useForm } from '@tanstack/react-form'
-import { useAddTareas } from '../Services/TareasServices'
+import { useCrearTarea } from '../Services/TareasServices'
 import { ToastContainer, toast } from 'react-toastify';
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import 'react-toastify/dist/ReactToastify.css';
 
 
 const AddTareaForm = () => {
+  const queryClient = useQueryClient()
 
   // 1) grab your mutation
-  const {
-    mutate: addTarea,
-    isLoading: 
-    isAdding,
-    isError,
-    error,
-    isSuccess,
-  } = useAddTareas()
+ const { mutate: addTarea, isLoading, isError } = useCrearTarea({
+    onSuccess: () => {
+      toast.success("Tarea agregada.")
+      queryClient.invalidateQueries(['tareas'])
+      form.reset()
+    },
+    onError: () => {
+      toast.error("Ocurrió un error al agregar la tarea.")
+    }
+  })
 
      // 1️⃣ Initialize form state with defaultValues and a submit handler
   const form = useForm({
@@ -32,9 +36,7 @@ const AddTareaForm = () => {
     id: crypto.randomUUID(),
   }
 
-  addTarea({ nuevaTarea })
-  form.reset()
-
+  addTarea(nuevaTarea)
 }
 
       
@@ -161,7 +163,6 @@ const AddTareaForm = () => {
             type="submit"
             disabled={!form.state.canSubmit}
             className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2 rounded-lg"
-            onClick={() =>  toast.success("Tarea agregada.")}
           >
             Agregar
           </button>
