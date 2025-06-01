@@ -12,6 +12,7 @@ import Login from "../Components/Login";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 
 function ProveedoresPage() {
   const [proveedores, setProveedores] = useState([]);
@@ -75,16 +76,38 @@ function ProveedoresPage() {
   };
 
   const eliminar = async (id) => {
-    if (!window.confirm('¿Seguro que deseas eliminar este proveedor?')) return;
-
-    const nuevaLista = proveedores.filter((p) => p.id !== id);
-    setProveedores(nuevaLista);
-
-    await eliminarProveedor(id);
-    toast.success("Proveedor eliminado correctamente.");
+    const confirmacion = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¡No podrás revertir esta acción!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e2504c',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+  
+    if (!confirmacion.isConfirmed) return;
+  
+    try {
+      await eliminarProveedor(id); // ✅ Elimina en backend
+  
+      const dataActualizada = await obtenerProveedores(); // 🔄 Refresca la lista desde backend
+      setProveedores(dataActualizada);
+  
+      // ✅ Mensaje final igual al de la imagen
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Eliminado!',
+        text: 'El artículo fue eliminado correctamente.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#7f70eb'
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Ocurrió un error al eliminar el proveedor.");
+    }
   };
-
-
 
   const cancelForm = () => {
     setProveedorEditando(null);
