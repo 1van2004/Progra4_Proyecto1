@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { useEditarTarea } from "../Services/TareasServices";
 import { ToastContainer, toast } from 'react-toastify';
+import { useQueryClient } from "@tanstack/react-query";
 import 'react-toastify/dist/ReactToastify.css';
 
 const EditTareaForm = ({ tarea, onSuccess }) => {
+  const queryClient = useQueryClient();
+
   const [formData, setFormData] = useState({
     id: tarea.id,
   description: tarea.description,
@@ -31,11 +34,22 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+if (formData.startdate > formData.enddate) {
+    toast.error("La fecha de inicio no puede ser despues de la fecha final.");
+    return;
+  }
+
+
     mutate(formData, {
       onSuccess: () => {
         toast.success("Tarea editada.");
     if (onSuccess) onSuccess();
     queryClient.invalidateQueries(['tareas']);
+  
+  
+  
+  
   }
     
 });

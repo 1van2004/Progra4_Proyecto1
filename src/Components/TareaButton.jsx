@@ -7,7 +7,7 @@ const TareaButton = ({ tareas, onFiltrarResponsable }) => {
 
   const responsables = useMemo(() => {
   if (!tareas) return [];
-  const nombres = tareas.map(t => t.perincharge);
+  const nombres = tareas.map(t => t.perInCharge);
   return [...new Set(nombres)];
 }, [tareas]);
 

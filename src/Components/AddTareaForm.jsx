@@ -67,6 +67,7 @@ const AddTareaForm = () => {
                 onChange={e => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               />
             )}
           </form.Field>
@@ -88,6 +89,7 @@ const AddTareaForm = () => {
                 onChange={e => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               />
             )}
           </form.Field>
@@ -108,6 +110,7 @@ const AddTareaForm = () => {
                 onChange={e => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               />
             )}
           </form.Field>
@@ -127,6 +130,7 @@ const AddTareaForm = () => {
                 onChange={e => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               />
             )}
           </form.Field>
@@ -147,6 +151,7 @@ const AddTareaForm = () => {
         onChange={e => field.handleChange(e.target.value)}
         onBlur={field.handleBlur}
         className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
       >
         <option value="">Selecciona una prioridad</option>
         <option value="Alta">Alta</option>
