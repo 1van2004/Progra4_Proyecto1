@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext.jsx";
 import Login from "../Components/Login";
+import { Plus, List, ChevronDown } from 'lucide-react';
 
 const NavBar = () => {
   const { user } = useContext(AuthContext)
@@ -63,32 +64,34 @@ const NavBar = () => {
 
           {/* Dropdown de Gestión de Usuarios */}
           <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={handleDropdownClick}
-              className="text-[15px] font-medium hover:text-gray-300 transition-colors flex items-center"
-            >
-              Gestión de Usuarios ⌄
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-50 border border-blue-200 text-gray-800">
-                <Link
-                  to="/agregar-usuario"
-                  onClick={handleLinkClick}
-                  className="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                >
-                  ➕ Agregar Usuario
-                </Link>
-                <Link
-                  to="/lista-usuarios"
-                  onClick={handleLinkClick}
-                  className="block px-4 py-2 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                >
-                  📋 Lista de Usuarios
-                </Link>
-              </div>
-            )}
-            
-          </div>
+  <button
+    onClick={handleDropdownClick}
+    className="text-[15px] font-medium hover:text-blue-500 transition-colors flex items-center gap-2"
+  >
+    Gestión de Usuarios <ChevronDown size={18} />
+  </button>
+
+  {isDropdownOpen && (
+    <div className="absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-2xl z-50 border border-blue-200 text-gray-800 overflow-hidden">
+      <Link
+        to="/agregar-usuario"
+        onClick={handleLinkClick}
+        className="flex items-center gap-2 px-4 py-3 hover:bg-blue-100 hover:text-blue-700 transition-colors"
+      >
+        <Plus size={18} />
+        <span>Agregar Usuario</span>
+      </Link>
+      <Link
+        to="/lista-usuarios"
+        onClick={handleLinkClick}
+        className="flex items-center gap-2 px-4 py-3 hover:bg-blue-100 hover:text-blue-700 transition-colors"
+      >
+        <List size={18} />
+        <span>Lista de Usuarios</span>
+      </Link>
+    </div>
+  )}
+</div>
           <Link to="/login" className="text-[15px] font-medium hover:text-gray-300 transition-colors">
             Logout
           </Link>
