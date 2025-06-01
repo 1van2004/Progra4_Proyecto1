@@ -5,12 +5,12 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const EditTareaForm = ({ tarea, onSuccess }) => {
   const [formData, setFormData] = useState({
-    id: "",
-    description: "",
-    startdate: "",
-    enddate: "",
-    perincharge: "",
-    Priority: ""
+    id: tarea.id,
+  description: tarea.description,
+  startdate: tarea.startDate,
+  enddate: tarea.endDate,
+  perincharge: tarea.perInCharge,
+  Priority: tarea.priority
   });
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
         <label className="block font-medium">Fecha de inicio</label>
         <input
           type="date"
-          name="startdate"
+          name="startDate"
           value={formData.startdate}
           onChange={handleChange}
           className="w-full border p-2 rounded"
@@ -70,7 +70,7 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
         <label className="block font-medium">Fecha de fin</label>
         <input
           type="date"
-          name="enddate"
+          name="endDate"
           value={formData.enddate}
           onChange={handleChange}
           className="w-full border p-2 rounded"
@@ -81,7 +81,7 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
       <div>
         <label className="block font-medium">Persona a cargo</label>
         <input
-          name="perincharge"
+          name="perInCharge"
           value={formData.perincharge}
           onChange={handleChange}
           className="w-full border p-2 rounded"
@@ -92,7 +92,7 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
       <div>
         <label className="block font-medium">Nivel de prioridad</label>
         <select
-          name="Priority"
+          name="priority"
           value={formData.Priority}
           onChange={handleChange}
           className="w-full border p-2 rounded"
@@ -108,7 +108,6 @@ const EditTareaForm = ({ tarea, onSuccess }) => {
       <button
         type="submit"
         className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2 rounded-lg"
-         onClick={() =>  toast.success("Tarea editada.")}
       >
         Guardar cambios
       </button>

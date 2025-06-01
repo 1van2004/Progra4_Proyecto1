@@ -1,18 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
+import { client as axiosClient } from '../Services/AuthService';
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const BASE_URL = "https://localhost:7255/api/Tareas";
-const headers = {
-  'Content-Type': 'application/json',
-};
 
 export const useObtenerTareas = () => {
   return useQuery({
     queryKey: ['tareas'],
     queryFn: async () => {
-      const response = await axios.get(BASE_URL, { headers });
+      const response = await axiosClient.get(BASE_URL);
       return response.data || [];
     }
   });
@@ -21,7 +19,7 @@ export const useObtenerTareas = () => {
 export const useCrearTarea = (options) => {
   return useMutation({
     mutationFn: async (tarea) => {
-      await axios.post(BASE_URL, tarea, { headers });
+      await axiosClient.post(BASE_URL, tarea);
     },
     ...options
   });
@@ -30,14 +28,14 @@ export const useCrearTarea = (options) => {
 export const useEditarTarea = () => {
   return useMutation({
     mutationFn: async (tarea) => {
-      await axios.put(`${BASE_URL}/${tarea.id}`, tarea, { headers });
+      await axiosClient.put(`${BASE_URL}/${tarea.id}`, tarea);
     }
   });
 };
 
 export const eliminarTarea = async (id) => {
   try {
-    await axios.delete(`${BASE_URL}/${id}`, { headers });
+    await axiosClient.delete(`${BASE_URL}/${id}`);
   } catch (error) {
     console.error('Error al eliminar tarea:', error);
   }
