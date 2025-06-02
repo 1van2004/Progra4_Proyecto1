@@ -32,7 +32,7 @@ function InventarioList({ inventario, onEditar, onEliminar }) {
          <td className="py-2 px-4 text-center">
           {item.fechaIngreso ? new Date(item.fechaIngreso).toLocaleDateString('es-CR') : ''}
          </td>
-         <td className="py-2 px-4 text-center">{item.moneda}{item.precio}</td>
+         <td className="py-2 px-4 text-center break-words">{item.moneda}{item.precio}</td>
          <td className="py-2 px-4 break-words text-center">{item.categoria}</td>
          <td className="py-2 px-4 text-center">
          <button onClick={() => onEditar(item)} className="bg-teal-800 hover:bg-teal-900 text-white text-xs px-5 py-1 rounded-full shadow-sm opacity-90 hover:opacity-100">
