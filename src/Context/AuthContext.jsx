@@ -1,65 +1,55 @@
 
+import { createContext, useEffect, useState } from "react";
+import { login as apiLogin, decodeToken } from "../Services/AuthService";
 
-// 1. Create a new context
+export const AuthContext = createContext();
 
-import { createContext, useState, useEffect } from 'react'
-import { useLogin } from '../Hooks/useLogin'
-import { decodeToken, client as axiosClient } from '../Services/AuthService'
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState(false);
 
-
-export const AuthContext = createContext()
-
-
-// 2. Create a Provider para compartir el estado del usuario
-export function AuthProvider({ children }) 
-{
-    const [user, setUser]   = useState(null)
-    const [token, setToken] = useState(null)
-    const { mutateAsync: loginMutation, isLoading, isError } = useLogin()
-
-    const login = async (email, password) => {
-        const newToken = await loginMutation({ email, password })
-        localStorage.setItem('authToken', newToken)
-        axiosClient.defaults.headers.common.Authorization = `Bearer ${newToken}`
-        setToken(newToken)
-        const data = decodeToken(newToken)
-        setUser({ email, ...data })
-        return data
-      }
-
-      const logout = () => {
-        localStorage.removeItem('authToken')
-        delete axiosClient.defaults.headers.common.Authorization
-        setToken(null)
-        setUser(null)
-      }
-
-        // rehydrate on mount
   useEffect(() => {
-    const stored = localStorage.getItem('authToken')
-    if (stored) {
-      setToken(stored)
-      axiosClient.defaults.headers.common.Authorization = `Bearer ${stored}`
-      const data = decodeToken(stored)
-      setUser({ email: data.email, ...data })
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded = decodeToken(token);
+        setUser(decoded);
+      }
+    } catch (error) {
+      console.error("Error al leer token del localStorage:", error);
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     }
-  }, [])
+  }, []);
+
+  const login = async (email, password) => {
+    setLoginLoading(true);
+    setLoginError(false);
+    try {
+      const token = await apiLogin({ email, password });
+      localStorage.setItem("token", token);
+      const decodedUser = decodeToken(token);
+      localStorage.setItem("user", JSON.stringify(decodedUser));
+      setUser(decodedUser);
+    } catch (error) {
+      console.error("Error en login:", error);
+      setLoginError(true);
+      throw error;
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        login,
-        logout,
-        setUser,
-        loginLoading: isLoading,
-        loginError: isError,
-      }}
-    >
+    <AuthContext.Provider value={{ user, login, logout, loginLoading, loginError }}>
       {children}
     </AuthContext.Provider>
-  )
-
-  
+  );
 }

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { client as axiosClient } from '../Services/AuthService';
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const BASE_URL = "https://localhost:7255/api/Tareas";
 

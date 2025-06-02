@@ -5,17 +5,17 @@ import ReportTablePage from "./Pages/ReportTablePage";
 import ReportFormPage from "./Pages/ReportFormPage";
 import ProveedoresPage from "./Pages/ProveedoresPage";
 import { createBrowserHistory, createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
-import InventoryPage from "./Pages/InventoryPage";
+import InventarioPage from "./Pages/InventarioPage";
 import ListUsersPage from "./Pages/ListUsersPage";
 import AddUsersPage from "./Pages/AddUsersPage";
 import EditUsersPage from "./Pages/EditUsersPage";
 import LoginPage from "./Pages/LoginPage";
-// Definición de la ruta raíz
+
 const rootRoute = createRootRoute({
   component: RootLayout,
 });
 
-// Rutas de las páginas
+
 const homeRoute = createRoute({ 
   getParentRoute: () => rootRoute,    
   path: "/", 
@@ -37,7 +37,7 @@ const proveedoresRoute = createRoute({
 const inventarioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/inventario",
-  component: InventoryPage,
+  component: InventarioPage,
 });
 
 const reportFormsRoute = createRoute({
@@ -75,7 +75,7 @@ const loginRoute = createRoute({
   path: "/login",
   component: LoginPage,
 }); 
-// Agregar rutas al root
+
 rootRoute.addChildren([
   homeRoute,
   tareaRoute,
@@ -90,7 +90,7 @@ rootRoute.addChildren([
 ]);
 
 
-// Creación del enrutador
+
 const router = createRouter({
   routeTree: rootRoute,
   history: createBrowserHistory(),
