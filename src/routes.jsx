@@ -5,7 +5,7 @@ import ReportTablePage from "./Pages/ReportTablePage";
 import ReportFormPage from "./Pages/ReportFormPage";
 import ProveedoresPage from "./Pages/ProveedoresPage";
 import { createBrowserHistory, createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
-import InventoryPage from "./Pages/InventoryPage";
+import InventarioPage from "./Pages/InventarioPage";
 import ListUsersPage from "./Pages/ListUsersPage";
 import AddUsersPage from "./Pages/AddUsersPage";
 import EditUsersPage from "./Pages/EditUsersPage";
@@ -37,7 +37,7 @@ const proveedoresRoute = createRoute({
 const inventarioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/inventario",
-  component: InventoryPage,
+  component: InventarioPage,
 });
 
 const reportFormsRoute = createRoute({
