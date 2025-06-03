@@ -1,15 +1,12 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useContext } from 'react';
 import { useReportes, useDeleteReporte } from '../Services/ReportService';
-import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-} from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { LoadingModal } from './Modals/LoadingModal';
 import { SuccessModal } from './Modals/SuccessModal';
 import { ConfirmModal } from './Modals/ConfirmModal';
+import { AuthContext } from '../Context/AuthContext';
+import { useRouter } from '@tanstack/react-router'; // ✅ CORRECTO
 
-// 👉 Función para formatear la fecha
 const formatFechaHora = (isoString) => {
   const fecha = new Date(isoString);
   return fecha.toLocaleString('es-CR', {
@@ -23,6 +20,16 @@ const formatFechaHora = (isoString) => {
 };
 
 export default function ReportTable() {
+  const { auth } = useContext(AuthContext);
+  const router = useRouter(); // ✅
+
+  // 🔐 Redirigir si no está autenticado
+  useEffect(() => {
+    if (!auth?.token) {
+      router.navigate({ to: '/login' });
+    }
+  }, [auth, router]);
+
   const { data: reportes = [], isLoading, isError } = useReportes();
   const { mutate: deleteReporte } = useDeleteReporte();
 
@@ -33,8 +40,6 @@ export default function ReportTable() {
   const [successMsg, setSuccessMsg] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-
-
 
   useEffect(() => {
     if (inputValue.trim() === '') {
@@ -71,9 +76,9 @@ export default function ReportTable() {
       return (
         reporte.nombre.toLowerCase().includes(searchTerm) ||
         reporte.direccion.toLowerCase().includes(searchTerm) ||
-        reporte.tipo.toLowerCase().includes(searchTerm) ||
-        reporte.descripcion.toLowerCase().includes(searchTerm) ||
-        reporte.ubicacion.toLowerCase().includes(searchTerm) ||
+        reporte.tiporeporte.toLowerCase().includes(searchTerm) ||
+        reporte.descripcionFuga.toLowerCase().includes(searchTerm) ||
+        reporte.ubicacionReferencia.toLowerCase().includes(searchTerm) ||
         formatFechaHora(reporte.fechaHora).toLowerCase().includes(searchTerm)
       );
     });
@@ -82,9 +87,9 @@ export default function ReportTable() {
   const columns = [
     { header: 'Nombre', accessorKey: 'nombre' },
     { header: 'Dirección', accessorKey: 'direccion' },
-    { header: 'Tipo', accessorKey: 'tipo' },
-    { header: 'Descripción', accessorKey: 'descripcion' },
-    { header: 'Ubicación', accessorKey: 'ubicacion' },
+    { header: 'Tipo', accessorKey: 'tiporeporte' },
+    { header: 'Descripción', accessorKey: 'descripcionFuga' },
+    { header: 'Ubicación', accessorKey: 'ubicacionReferencia' },
     {
       header: 'Fecha y hora',
       accessorKey: 'fechaHora',
@@ -132,9 +137,7 @@ export default function ReportTable() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleSearch();
-              }
+              if (e.key === 'Enter') handleSearch();
             }}
           />
           <button
