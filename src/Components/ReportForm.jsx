@@ -43,7 +43,7 @@ export default function ReporteFormPage() {
         direccion: value.direccion,
         tiporeporte: value.tipo,
         descripcionFuga: value.descripcion,
-        ubicaciondeReferencia: value.ubicacion,
+        ubicacionReferencia: value.ubicacion,
         fechaHora: new Date().toISOString(),
       };
 

@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext.jsx";
 import Login from "../Components/Login";
 
-const ReportesPage = () => {
+const ReportTablePage = () => {
   const { user } = useContext(AuthContext);
 
   return (
@@ -19,4 +19,4 @@ const ReportesPage = () => {
   );
 };
 
-export default ReportesPage;
+export default ReportTablePage;
