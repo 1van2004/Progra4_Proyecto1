@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { useAddReporte } from '../services/reportService';
+import { useAddReporte } from '../Services/ReportService';
 import { v4 as uuidv4 } from 'uuid';
-import { LoadingModal } from '../components/Modals/LoadingModal';
-import { SuccessModal } from '../components/Modals/SuccessModal';
+import { LoadingModal } from './Modals/LoadingModal';
+import { SuccessModal } from './Modals/SuccessModal';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 const tipos = [
@@ -39,7 +39,11 @@ export default function ReporteFormPage() {
     onSubmit: async ({ value }) => {
       const nuevo = {
         id: uuidv4(),
-        ...value,
+        nombre: value.nombre,
+        direccion: value.direccion,
+        tiporeporte: value.tipo,
+        descripcionFuga: value.descripcion,
+        ubicaciondeReferencia: value.ubicacion,
         fechaHora: new Date().toISOString(),
       };
 
@@ -74,6 +78,7 @@ export default function ReporteFormPage() {
       contenedor.scrollBy({ left: direccion === 'derecha' ? distancia : -distancia, behavior: 'smooth' });
     }
   }
+
 
   return (
     <div className="space-y-10 p-6">

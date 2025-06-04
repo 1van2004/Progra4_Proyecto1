@@ -1,14 +1,8 @@
-import ReportForm from '../Components/ReportForm'; // Corregimos el nombre de importación
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const queryClient = new QueryClient();
+import ReportForm from '../Components/ReportForm';
 
 const ReportesPage = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ReportForm /> 
-    </QueryClientProvider>
-  );
+  return <ReportForm />;
 };
 
 export default ReportesPage;
