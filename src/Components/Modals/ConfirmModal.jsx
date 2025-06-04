@@ -2,13 +2,13 @@ import { motion } from 'framer-motion';
 
 export const ConfirmModal = ({ title = '¿Estás seguro?', message, onConfirm, onCancel }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
       <motion.div
         className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.2 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.3 }}
       >
         <h2 className="text-xl font-semibold text-gray-800 mb-4">{title}</h2>
         <p className="text-gray-600 mb-6">{message}</p>
