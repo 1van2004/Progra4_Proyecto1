@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 
 const UserForm = ({ formData, handleChange, handleSubmit, modo = "Agregar" }) => {
+  const [alerta, setAlerta] = useState("");
+
   if (!formData) return <div className="p-4">Cargando datos...</div>;
+
+  const handleValidatedChange = (e) => {
+    const { name, value } = e.target;
+
+    // Validación para Nombre y Apellido
+    if ((name === "nombre" || name === "apellido") && /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(value)) {
+      setAlerta(`Solo se permiten letras en el campo ${name}`);
+      setTimeout(() => setAlerta(""), 2500);
+      return;
+    }
+
+    handleChange(e);
+  };
 
   return (
     <div className="bg-gradient-to-r from-teal-900 to-teal-600 p-1 rounded-xl max-w-3xl mx-auto mt-3 mb-6 p-6 bg-white shadow-xl rounded-xl border border-teal-700">
@@ -10,12 +25,18 @@ const UserForm = ({ formData, handleChange, handleSubmit, modo = "Agregar" }) =>
           {modo} Usuario
         </h2>
 
+        {alerta && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-center">
+            {alerta}
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit}
           autoComplete="off"
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {[ 
+          {[
             { label: "NIS", name: "nis" },
             { label: "Número de Medidor", name: "numeroMedidor" },
             { label: "Nombre", name: "nombre" },
@@ -31,15 +52,14 @@ const UserForm = ({ formData, handleChange, handleSubmit, modo = "Agregar" }) =>
                 type={type}
                 name={name}
                 value={formData[name] || ""}
-                onChange={handleChange}
+                onChange={handleValidatedChange}
                 autoComplete="off"
                 className="w-full p-2 mt-1 border border-teal-700 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600"
-                required={name !== "zona"} // Zona es opcional
+                required={name !== "zona"}
               />
             </div>
           ))}
 
-          {/* Dirección centrada */}
           <div className="md:col-span-2">
             <label className="text-black-800 font-semibold">Dirección</label>
             <input
@@ -53,7 +73,6 @@ const UserForm = ({ formData, handleChange, handleSubmit, modo = "Agregar" }) =>
             />
           </div>
 
-          {/* Botones Guardar y Cancelar */}
           <div className="md:col-span-2 flex justify-center gap-4 mt-4">
             <button
               type="submit"
