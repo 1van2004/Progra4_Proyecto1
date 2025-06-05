@@ -18,6 +18,7 @@ function InventarioPage() {
   const [itemEditando, setItemEditando] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const { user } = useContext(AuthContext);
+  const [nombreInput, setNombreInput] = useState('');
 
   useEffect(() => {
     async function cargar() {
@@ -26,6 +27,14 @@ function InventarioPage() {
     }
     cargar();
   }, []);
+
+   const handleNombreChange = (e) => {
+    const valor = e.target.value;
+    const soloLetras = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/;
+    if (soloLetras.test(valor) || valor === "") {
+      setNombreInput(valor);
+    }
+  };
 
   const guardar = async (evento) => {
     evento.preventDefault();
@@ -41,7 +50,17 @@ function InventarioPage() {
      moneda: form.moneda.value,
     categoria: form.categoria.value.trim(),
     };
-     
+    if (!nombreInput.trim()) {
+      toast.error('El nombre es obligatorio.');
+      return;
+    }
+
+    const soloLetras = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    if (!soloLetras.test(nuevoItem.nombre)) {
+      toast.error('El nombre solo debe contener letras y espacios.');
+      return;
+    }
+
     if (nuevoItem.precio < 0 || nuevoItem.cantidad < 0) {
     toast.error('Cantidad y precio deben ser mayores o iguales a cero');
     return;
@@ -63,14 +82,15 @@ function InventarioPage() {
 
     const data = await obtenerInventario();
     setInventario(data);
-
     setItemEditando(null);
     setShowModal(false);
+    setNombreInput("");
     form.reset();
   };
 
   const editar = (item) => {
     setItemEditando(item);
+    setNombreInput(item.nombre || "");
     setShowModal(true);
   };
 
@@ -101,6 +121,7 @@ function InventarioPage() {
   const cancelForm = () => {
     setItemEditando(null);
     setShowModal(false);
+    setNombreInput("");
   };
 
   const filtrados = inventario.filter((i) =>
@@ -128,6 +149,7 @@ function InventarioPage() {
             <button
               onClick={() => {
                 setItemEditando(null);
+                setNombreInput("");
                 setShowModal(true);
               }}
               className="bg-[#009285] text-white px-4 py-2 rounded hover:bg-[#055a55]"
@@ -148,11 +170,12 @@ function InventarioPage() {
                   <div>
                     <label className="block font-medium">Nombre</label>
                     <input
-                      type="text"
-                      name="nombre"
-                      defaultValue={itemEditando?.nombre || ''}
-                      className="w-full border border-gray-300 px-3 py-2 rounded"
-                    />
+                     type="text"
+                     name="nombre"
+                     value={nombreInput}
+                     onChange={handleNombreChange}
+                     className="w-full border border-gray-300 px-3 py-2 rounded"
+                     />
                   </div>
                   <div>
                     <label className="block font-medium">Descripción</label>
@@ -174,15 +197,24 @@ function InventarioPage() {
                       step="1"
                     />
                   </div>
-                  <div>
-                    <label className="block font-medium">Unidad</label>
-                    <input
-                      type="text"
-                      name="unidad"
+                      <div>
+                    <label className="block font-medium">Tipo de unidad de medida</label>
+                     <select
+                     name="unidad"
                       defaultValue={itemEditando?.unidad || ''}
                       className="w-full border border-gray-300 px-3 py-2 rounded"
-                    />
-                  </div>
+                     required
+                     >
+                      <option value="" disabled>Seleccione una unidad...</option>
+                      <option value="kg">Kilogramos (kg)</option>
+                      <option value="g">Gramos (g)</option>
+                      <option value="l">Litros (l)</option>
+                      <option value="ml">Mililitros (ml)</option>
+                      <option value="m">Metros (m)</option>
+                     <option value="cm">Centímetros (cm)</option>
+                     <option value="otros">Otros</option>
+                      </select>
+                    </div>
                   <div>
                     <label className="block font-medium">Fecha de Ingreso</label>
                     <input
