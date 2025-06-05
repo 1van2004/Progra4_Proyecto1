@@ -5,19 +5,19 @@ export const SuccessModal = ({ message, onClose }) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       onClose();
-    }, 1000); // 3000 ms = 3 segundos
+    }, 1000); // ⏱️ 1 segundo
 
-    return () => clearTimeout(timeout); // Limpieza si se desmonta
+    return () => clearTimeout(timeout);
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
       <motion.div
         className="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.8 }}
       >
         <div className="flex flex-col items-center gap-4">
           <svg
@@ -30,7 +30,6 @@ export const SuccessModal = ({ message, onClose }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           <p className="text-gray-800 text-lg font-semibold">{message}</p>
-          
         </div>
       </motion.div>
     </div>

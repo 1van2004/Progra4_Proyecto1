@@ -20,15 +20,15 @@ const formatFechaHora = (isoString) => {
 };
 
 export default function ReportTable() {
-  const { auth } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const router = useRouter(); // ✅
 
   // 🔐 Redirigir si no está autenticado
   useEffect(() => {
-    if (!auth?.token) {
+    if (!user) {
       router.navigate({ to: '/login' });
     }
-  }, [auth, router]);
+  }, [user, router]);
 
   const { data: reportes = [], isLoading, isError } = useReportes();
   const { mutate: deleteReporte } = useDeleteReporte();
