@@ -4,11 +4,8 @@ import { SortAsc, SortDesc } from "lucide-react";
 import AddGenericModal from "../Components/Modals/AddGenericModal";
 import EditUsersPage from "./EditUsersPage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useContext } from "react";
-import { AuthContext } from "../Context/AuthContext.jsx";
-import Login from "../Components/Login";
+
 const ListUsersPage = () => {
-    const { user } = useContext(AuthContext)
   const { data: users, isLoading, isError } = useUsers();
   const queryClient = useQueryClient();
 
@@ -30,20 +27,13 @@ const ListUsersPage = () => {
   const [ordenCampo, setOrdenCampo] = useState("nis");
   const [ordenAscendente, setOrdenAscendente] = useState(true);
 
- useEffect(() => {
-  if (users && Array.isArray(users)) {
-    const resultado = aplicarFiltro(users);
-    const ordenados = ordenarUsuarios(resultado, ordenCampo, ordenAscendente);
-    setUsuariosFiltrados(ordenados);
-
-    // Si después de aplicar el filtro no hay usuarios, limpia la búsqueda
-    if (resultado.length === 0 && busqueda !== "") {
-      setBusqueda("");
-      setBusquedaInput("");
+  useEffect(() => {
+    if (users && Array.isArray(users)) {
+      const resultado = aplicarFiltro(users);
+      const ordenados = ordenarUsuarios(resultado, ordenCampo, ordenAscendente);
+      setUsuariosFiltrados(ordenados);
     }
-  }
-}, [users, busqueda, filtro, ordenCampo, ordenAscendente]);
-
+  }, [users, busqueda, filtro, ordenCampo, ordenAscendente]);
 
   const aplicarFiltro = (lista) => {
     const texto = busqueda.trim().toLowerCase();
@@ -63,36 +53,33 @@ const ListUsersPage = () => {
     });
   };
 
-  const confirmarEliminacion = (usuario) => {
-    setUsuarioSeleccionado(usuario);
-    setModalVisible(true);
-  };
-
-  const eliminarUsuarioConfirmado = async () => {
-  if (!usuarioSeleccionado) return;
-  const id = usuarioSeleccionado.id;
-  setModalVisible(false);
-  setUsuarioSeleccionado(null);
-  setShowNotification(true);
-
-  try {
-    await deleteUserMutation(id, {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["users"]);
-        // Forzar que usuariosFiltrados se limpie si no quedan usuarios
-        if (usuariosFiltrados.length === 1) {
-          setUsuariosFiltrados([]);
-        }
-      },
-    });
-  } catch (error) {
-    console.error("Error al eliminar el usuario:", error);
+const eliminarUsuarioConfirmado = () => {
+  const id = usuarioSeleccionado?.id;
+  if (!id) {
+    console.error("ID de usuario no válido para eliminar.");
+    return;
   }
 
-  setTimeout(() => setShowNotification(false), 2000);
+  deleteUserMutation(id, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["users"]);
+      setShowNotification(true);
+      setUsuarioSeleccionado(null);      
+      setModalVisible(false); 
+
+      setTimeout(() => setShowNotification(false), 1500)
+    },
+    onError: () => {
+      console.error("Error al eliminar el usuario");
+    },
+  });
 };
 
 
+  const confirmarEliminacion = (user) => {
+    setUsuarioSeleccionado(user);
+    setModalVisible(true);
+  };
 
   const handleUserUpdated = () => {
     queryClient.invalidateQueries(["users"]);
@@ -100,13 +87,9 @@ const ListUsersPage = () => {
   };
 
   if (isLoading) return <div className="text-center">Cargando usuarios...</div>;
-  if (isError) return <div className="text-center text-red-500">Error al cargar usuarios.</div>;
 
   return (
-    
-    <div>
-    {user ? <div className="p-4">
-      <div className="relative max-w-7xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl overflow-hidden">
+    <div className="relative max-w-7xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl overflow-hidden">
       <h2 className="text-2xl font-bold text-blue-900 mb-6 text-center">Lista de Usuarios</h2>
 
       {showNotification && (
@@ -117,50 +100,46 @@ const ListUsersPage = () => {
         </div>
       )}
 
-   {/* Contenedor del buscador y filtros */}
-<div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-  {/* Buscador + botón */}
-  <div className="flex w-full md:w-3/5 gap-2">
-    <input
-  type="text"
-  placeholder={`Buscar por ${filtro}`}
-  value={busquedaInput}
-  onChange={(e) => {
-    setBusquedaInput(e.target.value);
-    if (e.target.value === "") {
-      setBusqueda("");
-    }
-      }}
-      className="flex-grow p-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          setBusqueda(busquedaInput);
-        }
-      }}
-    />
-    <button
-      onClick={() => setBusqueda(busquedaInput)}
-      className="bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 rounded-md"
-    >
-      Buscar
-    </button>
-  </div>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+        <div className="flex w-full md:w-3/5 gap-2">
+          <input
+            type="text"
+            placeholder={`Buscar por ${filtro}`}
+            value={busquedaInput}
+            onChange={(e) => {
+              setBusquedaInput(e.target.value);
+              if (e.target.value === "") {
+                setBusqueda("");
+              }
+            }}
+            className="flex-grow p-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setBusqueda(busquedaInput);
+              }
+            }}
+          />
+          <button
+            onClick={() => setBusqueda(busquedaInput)}
+            className="bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 rounded-md"
+          >
+            Buscar
+          </button>
+        </div>
 
-  {/* Filtro */}
-  <div className="w-full md:w-1/5">
-    <select
-      value={filtro}
-      onChange={(e) => setFiltro(e.target.value)}
-      className="w-full p-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-    >
-      <option value="nis">NIS</option>
-      <option value="cedula">Cédula</option>
-      <option value="zona">Zona</option>
-    </select>
-  </div>
-</div>
+        <div className="w-full md:w-1/5">
+          <select
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="w-full p-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            <option value="nis">NIS</option>
+            <option value="cedula">Cédula</option>
+            <option value="zona">Zona</option>
+          </select>
+        </div>
+      </div>
 
-      {/* Orden */}
       <div className="flex flex-wrap gap-4 items-center mb-4">
         <select
           value={ordenCampo}
@@ -184,39 +163,37 @@ const ListUsersPage = () => {
         </button>
       </div>
 
-      {/* Tabla */}
       <div className="overflow-x-auto">
-       <table className="min-w-full table-fixed border border-gray-300 shadow-sm text-sm">
-  <thead className="bg-gray-100 text-gray-800 border-b border-gray-300">
+        <table className="min-w-full table-fixed border border-gray-300 shadow-sm text-sm">
+          <thead className="bg-gray-100 text-gray-800 border-b border-gray-300">
             <tr>
-              <th className="border border-gray-300 px-3 py-2">#</th>
+              <th className="border border-gray-300 px-3 py-2">id</th>
               <th className="border border-gray-300 px-3 py-2">NIS</th>
               <th className="border border-gray-300 px-3 py-2">Medidor</th>
               <th className="border border-gray-300 px-3 py-2">Nombre</th>
               <th className="border border-gray-300 px-3 py-2">Apellido</th>
               <th className="border border-gray-300 px-3 py-2">Cédula</th>
               <th className="border border-gray-300 px-3 py-2">Teléfono</th>
-              <th className="border border-gray-300 px-3 py-2w-[220px]">Dirección</th>
-              <th className="border border-gray-300 px-3 py-2w-[220px]">Correo</th>
+              <th className="border border-gray-300 px-3 py-2">Dirección</th>
+              <th className="border border-gray-300 px-3 py-2">Correo</th>
               <th className="border border-gray-300 px-3 py-2">Zona</th>
-              <th className="border border-gray-300 px-3 py-2">Plano</th>
               <th className="border border-gray-300 px-3 py-2">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {usuariosFiltrados.length === 0 ? (
               <tr>
-                <td colSpan="12" className="text-center py-4 text-gray-500">
+                <td colSpan="11" className="text-center py-4 text-gray-500">
                   No se encontraron usuarios.
                 </td>
               </tr>
             ) : (
-              usuariosFiltrados.map((user, index) => (
+              usuariosFiltrados.map((user) => (
                 <tr
-                  key={user.id}
+                  key={user.id || user.nis}
                   className="text-center border-b border-gray-300 hover:bg-gray-50"
                 >
-                  <td className="border px-2 py-1">{index + 1}</td>
+                  <td className="border px-2 py-1">{user.id}</td>
                   <td className="border px-2 py-1">{user.nis}</td>
                   <td className="border px-2 py-1">{user.numeroMedidor}</td>
                   <td className="border px-2 py-1">{user.nombre}</td>
@@ -226,9 +203,9 @@ const ListUsersPage = () => {
                   <td className="border px-2 py-1">{user.direccion}</td>
                   <td className="border px-2 py-1">{user.correo}</td>
                   <td className="border px-2 py-1">{user.zona}</td>
-                  <td className="border px-2 py-1">{user.copiaPlano ? "Sí" : "No"}</td>
                   <td className="border px-2 py-1">
                     <div className="flex gap-2 justify-center">
+                      
                       <button
                         onClick={() => {
                           setUsuarioSeleccionado(user);
@@ -245,7 +222,7 @@ const ListUsersPage = () => {
                         Eliminar
                       </button>
                     </div>
-                  </td>
+                    </td>
                 </tr>
               ))
             )}
@@ -261,8 +238,7 @@ const ListUsersPage = () => {
             </h3>
             <p className="text-sm text-gray-600 mb-6">
               Esta acción no se puede deshacer. ¿Estás seguro de eliminar al
-              usuario{" "}
-              <span className="font-bold">{usuarioSeleccionado?.nombre}</span>?
+              usuario <span className="font-bold">{usuarioSeleccionado?.nombre}</span>?
             </p>
             <div className="flex justify-center gap-4">
               <button
@@ -292,11 +268,6 @@ const ListUsersPage = () => {
 
       <AddGenericModal />
     </div>
-    </div>
-        : <Login />
-    }
-</div>
-
   );
 };
 

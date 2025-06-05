@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import UserForm from "../Components/UserForm";
 import { useUsers, addUser } from "../Services/UsersService";
 import { useQueryClient } from "@tanstack/react-query";
-import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext.jsx";
 import Login from "../Components/Login";
+
 const AddUsersPage = () => {
-      const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
   const { data: users = [] } = useUsers();
 
   const [formData, setFormData] = useState({
@@ -23,7 +22,6 @@ const AddUsersPage = () => {
     direccion: "",
     correo: "",
     zona: "",
-    copiaPlano: null,
   });
 
   const [showAlert, setShowAlert] = useState(false);
@@ -31,15 +29,7 @@ const AddUsersPage = () => {
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
-    if (files) {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: files[0],
-      }));
-      return;
-    }
+    const { name, value } = e.target;
 
     let filteredValue = value;
 
@@ -55,7 +45,7 @@ const AddUsersPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const requiredFields = [
@@ -93,76 +83,78 @@ const AddUsersPage = () => {
       return;
     }
 
-    const nuevoUsuario = { ...formData, id: crypto.randomUUID() };
+ try {
+  const usuarioGuardado = await addUser(formData); // ← espera el ID generado por la API
 
-    addUser(nuevoUsuario);
+  const nuevosUsuarios = [...usersArray, usuarioGuardado];
+  queryClient.setQueryData(["users"], nuevosUsuarios);
 
-    const nuevosUsuarios = [...usersArray, nuevoUsuario];
-    queryClient.setQueryData(["users"], nuevosUsuarios);
+  setFormData({
+    nis: "",
+    numeroMedidor: "",
+    nombre: "",
+    apellido: "",
+    cedula: "",
+    telefono: "",
+    direccion: "",
+    correo: "",
+    zona: "",
+  });
 
-    setFormData({
-      nis: "",
-      numeroMedidor: "",
-      nombre: "",
-      apellido: "",
-      cedula: "",
-      telefono: "",
-      direccion: "",
-      correo: "",
-      zona: "",
-      copiaPlano: null,
-    });
+  setShowSuccess(true);
+  setTimeout(() => {
+    setShowSuccess(false);
+  }, 1500);
 
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-      // navigate({ to: "/usuarios" }); // opcional
-    }, 1500);
+} catch (error) {
+  console.error("Error al agregar usuario:", error);
+  setAlertMessage("Ocurrió un error al guardar el usuario.");
+  setShowAlert(true);
+}
   };
 
   const closeAlert = () => setShowAlert(false);
 
   return (
     <div>
-    {user ? <div className="p-4">
-      <div>
-      {showAlert && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full">
-            <h3 className="text-xl font-semibold text-red-600">¡Error!</h3>
-            <p className="text-gray-700 mt-4 whitespace-pre-line">{alertMessage}</p>
-            <div className="mt-4 text-center">
-              <button
-                onClick={closeAlert}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md transition"
-              >
-                ¡Entendido!
-              </button>
+      {user ? (
+        <div className="p-4">
+          {showAlert && (
+            <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full">
+                <h3 className="text-xl font-semibold text-red-600">¡Error!</h3>
+                <p className="text-gray-700 mt-4 whitespace-pre-line">{alertMessage}</p>
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={closeAlert}
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+                  >
+                    ¡Entendido!
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {showSuccess && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-5 rounded-lg shadow-xl text-center">
-            <h3 className="text-green-600 text-lg font-semibold mb-2">✅ Usuario guardado con éxito</h3>
-          </div>
-        </div>
-      )}
+          {showSuccess && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+              <div className="bg-white p-5 rounded-lg shadow-xl text-center">
+                <h3 className="text-green-600 text-lg font-semibold mb-2">✅ Usuario guardado con éxito</h3>
+              </div>
+            </div>
+          )}
 
-      <UserForm
-        formData={formData}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        submitText="Guardar Usuario"
-      />
+          <UserForm
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            submitText="Guardar Usuario"
+          />
+        </div>
+      ) : (
+        <Login />
+      )}
     </div>
-    </div>
-        : <Login />
-    }
-</div>
-    
   );
 };
 

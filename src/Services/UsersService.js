@@ -1,24 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-const BIN_ID = '681677788a456b7966971031';
-const API_KEY = '$2a$10$jDsAdbubSFTv/kzDxfFqz.fhsfFSjO8kgyy0Aiy6A7il2wAB/Gja6';
-const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const BASE_URL = 'https://localhost:7255/api/Users';
 
-const headers = {
-  'Content-Type': 'application/json',
-  'X-Master-Key': API_KEY,
+// Función para obtener headers con el token JWT
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
 };
 
-// Obtener usuarios
+// Obtener usuarios desde API
 export const fetchUsers = async () => {
-  const response = await axios.get(`${BASE_URL}/latest`, { headers });
-  const data = response?.data?.record;
-  return Array.isArray(data) ? data : [];
+  try {
+    const response = await axios.get(BASE_URL, { headers: getAuthHeaders() });
+    return response.data || [];
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+    throw error;
+  }
 };
 
-
-// Hook para usar usuarios
+// Hook para usar usuarios con React Query
 export const useUsers = () => {
   return useQuery({
     queryKey: ['users'],
@@ -28,50 +33,33 @@ export const useUsers = () => {
   });
 };
 
-// Guardar usuarios
-export const saveUsers = async (newUsers) => {
-  try {
-    await axios.put(BASE_URL, newUsers, { headers });
-  } catch (error) {
-    console.error('Error al guardar usuarios:', error);
-  }
-};
-
 // Agregar usuario
 export const addUser = async (newUser) => {
   try {
-    const currentUsers = await fetchUsers();
-    const updatedUsers = [...currentUsers, newUser];
-    await saveUsers(updatedUsers);
+    const response = await axios.post(BASE_URL, newUser, { headers: getAuthHeaders() });
+    return response.data;
   } catch (error) {
     console.error('Error al agregar usuario:', error);
+    throw error;
   }
 };
 
-// Eliminar usuario (optimizado)
+// Eliminar usuario
 export const deleteUser = async (userId) => {
   try {
-    const currentUsers = await fetchUsers();
-    const updatedUsers = currentUsers.filter(user => user.id !== userId);
-
-    // Si queda vacío, igual guardar arreglo vacío
-    await saveUsers(updatedUsers.length > 0 ? updatedUsers : []);
-
-    console.log(`Usuario con ID ${userId} eliminado.`);
-    return updatedUsers; // ← devolver la lista ya actualizada
+    const response = await axios.delete(`${BASE_URL}/${userId}`, { headers: getAuthHeaders() });
+    return response.data;
   } catch (error) {
     console.error('Error al eliminar usuario:', error);
     throw error;
   }
 };
-// Editar usuario existente
+
+// Editar usuario
 export const updateUser = async (updatedUser) => {
   try {
-    const currentUsers = await fetchUsers();
-    const updatedUsers = currentUsers.map(user =>
-      user.id === updatedUser.id ? updatedUser : user
-    );
-    await saveUsers(updatedUsers);
+    const response = await axios.put(`${BASE_URL}/${updatedUser.id}`, updatedUser, { headers: getAuthHeaders() });
+    return response.data;
   } catch (error) {
     console.error('Error al actualizar usuario:', error);
     throw error;
