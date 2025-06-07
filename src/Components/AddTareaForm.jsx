@@ -30,13 +30,21 @@ const AddTareaForm = () => {
       Priority: '',
     },
     
- onSubmit: async ({ value }) => {
+onSubmit: async ({ value }) => {
+  const { startdate, enddate } = value;
+
+  // Validación manual directa
+  if (startdate && enddate && new Date(startdate) > new Date(enddate)) {
+    toast.error('La fecha de inicio no puede ser posterior a la fecha final.');
+    return;
+  }
+
   const nuevaTarea = {
     ...value,
     id: crypto.randomUUID(),
-  }
+  };
 
-  addTarea(nuevaTarea)
+  addTarea(nuevaTarea);
 }
 
       

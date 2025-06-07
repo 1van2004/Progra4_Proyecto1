@@ -34,7 +34,7 @@ const tareas = useMemo(() => data ?? [], [data]);
 const handleDelete = (tarea) => {
   confirmAlert({
     title: 'Confirmación',
-    message: `¿Seguro que quieres borrar la tarea "${tarea.description}" del fontanero ${tarea.perincharge}?`,
+    message: `¿Seguro que quieres borrar la tarea "${tarea.description}" del fontanero ${tarea.perInCharge}?`,
     buttons: [
       {
         label: 'Sí, borrar',
