@@ -5,7 +5,7 @@ import { LoadingModal } from './Modals/LoadingModal';
 import { SuccessModal } from './Modals/SuccessModal';
 import { ConfirmModal } from './Modals/ConfirmModal';
 import { AuthContext } from '../Context/AuthContext';
-import { useRouter } from '@tanstack/react-router'; // ✅ CORRECTO
+import { useRouter } from '@tanstack/react-router'; 
 
 const formatFechaHora = (isoString) => {
   const fecha = new Date(isoString);
@@ -21,9 +21,10 @@ const formatFechaHora = (isoString) => {
 
 export default function ReportTable() {
   const { user } = useContext(AuthContext);
-  const router = useRouter(); // ✅
+  const router = useRouter(); 
 
   // 🔐 Redirigir si no está autenticado
+  
   useEffect(() => {
     if (!user) {
       router.navigate({ to: '/login' });
