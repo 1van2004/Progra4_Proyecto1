@@ -55,9 +55,10 @@ function ProveedoresPage() {
       await editarProveedor(nuevoProveedor);
       toast.success("Proveedor editado correctamente.");
     } else {
-      const proveedorConIdUI = { ...nuevoProveedor, id: Date.now() }; // Solo para mostrar en UI
-      nuevaLista = [...proveedores, proveedorConIdUI];
+
       await crearProveedor(nuevoProveedor);
+      const dataActualizada = await obtenerProveedores();
+      nuevaLista = dataActualizada;
       toast.success("Proveedor agregado correctamente.");
     }
 
@@ -92,7 +93,7 @@ function ProveedoresPage() {
   };
 
   const filtrados = proveedores.filter((p) =>
-    [p.nombreEmpresa, p.nombreRepresentante, p.cedulaRepresentante, p.correoEmpresa, p.telefonoEmpresa]
+    [p.id, p.nombreEmpresa]
       .join(' ')
       .toLowerCase()
       .includes(filtro.toLowerCase())
@@ -142,6 +143,7 @@ function ProveedoresPage() {
                       name="nombreEmpresa"
                       defaultValue={proveedorEditando?.nombreEmpresa || ''}
                       className="w-full border border-gray-300 px-3 py-2 rounded"
+                      required
                     />
                   </div>
                   <div>
@@ -149,8 +151,11 @@ function ProveedoresPage() {
                     <input
                       type="text"
                       name="nombreRepresentante"
+                      pattern="^[^\d]+$"
+                      title="No se permiten números"
                       defaultValue={proveedorEditando?.nombreRepresentante || ''}
                       className="w-full border border-gray-300 px-3 py-2 rounded"
+                      required
                     />
                   </div>
                   <div>
@@ -158,8 +163,11 @@ function ProveedoresPage() {
                     <input
                       type="text"
                       name="cedulaRepresentante"
+                      pattern="\d+"
+                      title="Solo se permiten números"
                       defaultValue={proveedorEditando?.cedulaRepresentante || ''}
                       className="w-full border border-gray-300 px-3 py-2 rounded"
+                      required
                     />
                   </div>
                   <div>
@@ -169,6 +177,7 @@ function ProveedoresPage() {
                       name="correoEmpresa"
                       defaultValue={proveedorEditando?.correoEmpresa || ''}
                       className="w-full border border-gray-300 px-3 py-2 rounded"
+                      required
                     />
                   </div>
                   <div>
@@ -176,8 +185,11 @@ function ProveedoresPage() {
                     <input
                       type="text"
                       name="telefonoEmpresa"
+                      pattern="\d+"
+                      title="Solo se permiten números"
                       defaultValue={proveedorEditando?.telefonoEmpresa || ''}
                       className="w-full border border-gray-300 px-3 py-2 rounded"
+                      required
                     />
                   </div>
                   <div>
@@ -187,6 +199,7 @@ function ProveedoresPage() {
                       name="descripcionProductos"
                       defaultValue={proveedorEditando?.descripcionProductos || ''}
                       className="w-full border border-gray-300 px-3 py-2 rounded"
+                      required
                     />
                   </div>
                   <div>
@@ -196,6 +209,7 @@ function ProveedoresPage() {
                       name="numeroCuenta"
                       defaultValue={proveedorEditando?.numeroCuenta || ''}
                       className="w-full border border-gray-300 px-3 py-2 rounded"
+                      required
                     />
                   </div>
 
